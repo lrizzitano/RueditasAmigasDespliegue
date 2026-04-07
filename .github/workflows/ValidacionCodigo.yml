@@ -10,6 +10,11 @@ jobs:
 
     steps:
 
+    - name: 🔍 Debug archivos
+  run: |
+    echo "Archivos en el repo:"
+    find . -type f
+
       - name: 🐍 Ejecutar validador inline
         run: |
           python3 << 'EOF'
