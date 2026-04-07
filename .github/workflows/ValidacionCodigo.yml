@@ -12,7 +12,6 @@ jobs:
 
       - name: 🐍 Ejecutar validador inline
         run: |
-          python3 << 'EOF'
           import re
           import glob
           import sys
