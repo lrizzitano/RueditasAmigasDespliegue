@@ -2,13 +2,6 @@ name: Validate PlantUML
 
 on:
   push:
-    paths:
-      - '/*.puml'
-      - '/.plantuml'
-  pull_request:
-    paths:
-      - '**/.puml'
-      - '**/*.plantuml'
 
 jobs:
   validate:
