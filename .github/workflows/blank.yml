@@ -9,8 +9,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 📥 Clonar repo
-        uses: actions/checkout@v3
 
       - name: 🐍 Ejecutar validador inline
         run: |
