@@ -1,0 +1,53 @@
+@startuml
+'https://plantuml.com/deployment-diagram
+
+@startuml
+title Diagrama de Despliegue Rueditas Amigas
+
+node "SistemaGeneradorDeRutas"
+actor "Cliente"
+actor "DevOp"
+cloud "Internet"
+node "SistemaNotificacionProfesional"
+
+
+rectangle  {
+node "LoadBalancer"
+node "Servidor1RueditasAmigas" {
+
+}
+node "Servidor2RueditasAmigas"
+node "ServidorCacheGeolocalizacion"
+node "ServidorReservas"
+node "Monitor"
+queue "ColaDeMensajes"
+database "Cache"
+database "BaseDeDatos"
+
+"LoadBalancer" --> "Servidor1RueditasAmigas" : HTTP
+"LoadBalancer" --> "Servidor2RueditasAmigas" : HTTP
+"Servidor1RueditasAmigas" --> "BaseDeDatos" : JDBC
+"Servidor2RueditasAmigas" --> "BaseDeDatos" : JDBC
+"Servidor1RueditasAmigas" --> "ColaDeMensajes" : TCP/IP
+"Servidor2RueditasAmigas" --> "ColaDeMensajes" : TCP/IP
+"Servidor1RueditasAmigas" --> "ServidorCacheGeolocalizacion"
+"Servidor2RueditasAmigas" --> "ServidorCacheGeolocalizacion"
+"Cliente" --> "Internet" : HTTPS
+"Internet" --> "LoadBalancer" : HTTPS
+"ServidorCacheGeolocalizacion" --> "Cache": JDBC
+"ServidorCacheGeolocalizacion" --> "SistemaGeneradorDeRutas": HTTPS
+"ServidorReservas" --> "SistemaNotificacionProfesional"  : HTTPS
+"ColaDeMensajes" --> "ServidorReservas": TCP/IP
+
+
+
+"LoadBalancer" ..> "Monitor"
+"Servidor1RueditasAmigas" ..> "Monitor"
+"Servidor2RueditasAmigas" ..> "Monitor"
+"ServidorCacheGeolocalizacion" ..> "Monitor"
+"ServidorReservas" ..> "Monitor"
+"DevOp" --> "Monitor" : HTTPS
+}
+
+
+@enduml
