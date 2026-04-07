@@ -1,0 +1,113 @@
+name: Validar Diagramas PlantUML
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Clonar repo
+        uses: actions/checkout@v3
+
+      - name: 🐍 Ejecutar validador inline
+        run: |
+          python3 << 'EOF'
+          import re
+          import glob
+          import sys
+
+          def parse_connections(puml_text):
+              pattern = r'"?([\w\d]+)"?\s*[-.]+>\s*"?([\w\d]+)"?'
+              return re.findall(pattern, puml_text)
+
+          def parse_nodes(puml_text):
+              pattern = r'(node|actor|database|queue|cloud)\s+"?([\w\d]+)"?'
+              return set(match[1] for match in re.findall(pattern, puml_text))
+
+          def find_node(nodes, keyword):
+              for n in nodes:
+                  if keyword.lower() in n.lower():
+                      return n
+              return None
+
+          def validate_diagram(file, content):
+              print(f"\n📄 Validando {file}")
+
+              connections = parse_connections(content)
+              nodes = parse_nodes(content)
+              conn_set = set(connections)
+
+              errors = []
+
+              def must_exist(a, b, desc):
+                  if not a or not b:
+                      errors.append(f"{desc} (no se encontraron nodos)")
+                  elif (a, b) not in conn_set:
+                      errors.append(f"{desc} ({a} -> {b})")
+
+              # 🔎 Detectar nodos por rol (flexible)
+              lb = find_node(nodes, "load")
+              srv1 = find_node(nodes, "servidor1")
+              srv2 = find_node(nodes, "servidor2")
+              db = find_node(nodes, "base")
+              cola = find_node(nodes, "cola")
+              reservas = find_node(nodes, "reserva")
+              notif = find_node(nodes, "notificacion")
+              cliente = find_node(nodes, "cliente")
+              internet = find_node(nodes, "internet")
+              cache_srv = find_node(nodes, "cache")
+              rutas = find_node(nodes, "ruta")
+
+              # ✅ Reglas
+              must_exist(cliente, internet, "Flujo cliente → internet")
+              must_exist(internet, lb, "Flujo internet → load balancer")
+
+              must_exist(lb, srv1, "Balanceo a servidor 1")
+              must_exist(lb, srv2, "Balanceo a servidor 2")
+
+              must_exist(srv1, db, "Servidor1 → DB")
+              must_exist(srv2, db, "Servidor2 → DB")
+
+              must_exist(srv1, cola, "Servidor1 → cola")
+              must_exist(srv2, cola, "Servidor2 → cola")
+
+              must_exist(cola, reservas, "Cola → reservas")
+
+              must_exist(reservas, notif, "Reservas → sistema de notificación")
+
+              must_exist(cache_srv, rutas, "Cache → sistema externo de rutas")
+
+              if errors:
+                  print("❌ Errores:")
+                  for e in errors:
+                      print(" -", e)
+                  return False
+              else:
+                  print("✅ OK")
+                  return True
+
+
+          # 🔍 Buscar todos los .puml
+          files = glob.glob("**/*.puml", recursive=True)
+
+          if not files:
+              print("⚠️ No se encontraron archivos .puml")
+              sys.exit(0)
+
+          all_ok = True
+
+          for file in files:
+              with open(file, "r", encoding="utf-8") as f:
+                  content = f.read()
+                  if not validate_diagram(file, content):
+                      all_ok = False
+
+          if not all_ok:
+              print("\n❌ Validación fallida")
+              sys.exit(1)
+          else:
+              print("\n✅ Todos los diagramas son válidos")
+          EOF
