@@ -35,7 +35,7 @@ jobs:
           echo "Validating architectural patterns..."
           
           # Check for Load Balancer connection
-          grep -qP 'LoadBalancer.*-->.*Servidor' $DIAGRAM_FILE || { echo "❌ Missing LoadBalancer pattern"; exit 1; }
+          grep -qP '"LoadBalancer" --> "Servidor1RueditasAmigas" : HTTP' $DIAGRAM_FILE || { echo "❌ Missing LoadBalancer pattern"; exit 1; }
           
           # Check for Database connection
           grep -qP 'Servidor.*-->.*BaseDeDatos' $DIAGRAM_FILE || { echo "❌ Missing Database connection pattern"; exit 1; }
