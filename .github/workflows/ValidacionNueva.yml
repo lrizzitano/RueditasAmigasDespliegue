@@ -64,6 +64,7 @@ jobs:
           echo "❌ CRITICAL: Se esperaban al menos $min conexiones del tipo [$pattern], pero se encontraron $count."
             return 1
             fi
+          echo "✅ OK: Se esperaban al menos $min conexiones del tipo [$pattern], y se encontraron $count."
             return 0
           }
 
