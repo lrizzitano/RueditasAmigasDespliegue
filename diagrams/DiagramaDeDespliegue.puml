@@ -19,7 +19,7 @@ database "BaseDeDatos"
 }
 
 "LoadBalancer" --> "Servidor1RueditasAmigas" : HTTP
-"LoadBalancer" --> "Servidor2RueditasAmigas" : HTTP
+
 "Servidor1RueditasAmigas" --> "BaseDeDatos" : JDBC
 "Servidor2RueditasAmigas" --> "BaseDeDatos" : JDBC
 "Servidor1RueditasAmigas" --> "ServidorGeolocalizacion"
