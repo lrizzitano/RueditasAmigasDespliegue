@@ -33,6 +33,7 @@ jobs:
             '\"[^"]*\"[[:space:]]*-->[[:space:]]*\"[^"]*\"[[:space:]]*:[[:space:]]*HTTP'
             '\"[^"]*\"[[:space:]]*-->[[:space:]]*\"[^"]*\"[[:space:]]*:[[:space:]]*JDBC'
             '\"[^"]*\"[[:space:]]*-->[[:space:]]*\"[^"]*\"[[:space:]]*:[[:space:]]*TCPIP'
+            '"Servidor2RueditasAmigas" --> "BaseDeDatosPrueba" : JDBC'
           )
           
           for rel in "${RELATIONS[@]}"; do
