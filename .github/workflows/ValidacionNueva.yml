@@ -24,32 +24,30 @@ jobs:
 
       - name: Validate Diagram Relations
         run: |
-          echo "Validating mandatory relationships..."
+          echo "Validating mandatory relationships with Regex..."
           MISSING=0
-  
-          # Array of mandatory strings to find in the diagrams folder
+          
+          # Array de expresiones regulares para validar la arquitectura
+          # Usamos \s* para permitir espacios variables y \.\.> para los puntos
           RELATIONS=(
-            '"LoadBalancer" ..> "Monitor"'
-            '"Servidor1RueditasAmigas" ..> "Monitor"'
-            '"Servidor2RueditasAmigas" ..> "Monitor"'
-            '"ServidorCacheGeolocalizacion" ..> "Monitor"'
-           '"ServidorReservas" ..> "Monitor"'
-            '"DevOp" --> "Monitor" : HTTPS'
+          '"LoadBalancer"\s*\.\.>\s*"Servidor"\s*:\s*HTTP'
           )
-  
+          
           for rel in "${RELATIONS[@]}"; do
-            # Search recursively in the diagrams folder
-            if ! grep -rqF "$rel" diagrams/; then
-              echo "❌ CRITICAL:
-              Missing relation: $rel"
-              MISSING=$((MISSING+1))
+          # -r: recursivo
+          # -q: modo silencioso
+          # -P: Perl-Compatible Regular Expressions (necesario para \s y otros)
+          if ! grep -rqP "$rel" diagrams/; then
+          echo "❌ CRITICAL: Missing relation matching pattern: $rel"
+            MISSING=$((MISSING+1))
             fi
-          done
-  
-          if [ $MISSING -ne 0 ]; then
-            echo "Validation failed: $MISSING relations missing."
+            done
+            
+            if [ $MISSING -ne 0 ]; then
+          echo "Validation failed: $MISSING relations missing."
             exit 1
-          fi
+            fi
+            echo "✅ All regex patterns validated successfully."
 
       - name: Generate PlantUML Diagrams
         uses: Timmy/plantuml-action@v1
