@@ -1,0 +1,19 @@
+name: PlantUml Validation
+
+on:
+  push:
+    pull:
+    paths:
+      - '**.puml'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Run PlantUML Syntax Check
+        run: |
+          # Usamos la imagen oficial para validar sin instalar Java manualmente
+          docker run --rm -v $(pwd):/data plantuml/plantuml:latest -syntax "/data/**.puml"
