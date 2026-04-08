@@ -41,12 +41,7 @@ database "BaseDeDatos"
 
 
 
-"LoadBalancer" ..> "Monitor"
-"Servidor1RueditasAmigas" ..> "Monitor"
-"Servidor2RueditasAmigas" ..> "Monitor"
-"ServidorCacheGeolocalizacion" ..> "Monitor"
-"ServidorReservas" ..> "Monitor"
-"DevOp" --> "Monitor" : HTTPS
+
 }
 
 
