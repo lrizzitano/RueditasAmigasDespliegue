@@ -36,25 +36,55 @@ jobs:
           )
 
           RELATIONS=(
-            '\"[^"]*\"[[:space:]]*-->[[:space:]]*\"[^"]*\"[[:space:]]*:[[:space:]]*HTTP'
-            '\"[^"]*\"[[:space:]]*-->[[:space:]]*\"[^"]*\"[[:space:]]*:[[:space:]]*JDBC'
+        # Cliente a Internet
+          '\"[^"]*\"[[:space:]]*-->[[:space:]]*\"[^"]*\"[[:space:]]*:[[:space:]]*HTTPS'
+        # Internet a LoadBalancer
+          '\"[^"]*\"[[:space:]]*-->[[:space:]]*\"[^"]*\"[[:space:]]*:[[:space:]]*HTTPS'
+        # LoadBalancer a Servidores (x2)
+          '\"[^"]*\"[[:space:]]*-->[[:space:]]*\"[^"]*\"[[:space:]]*:[[:space:]]*HTTP'
+          '\"[^"]*\"[[:space:]]*-->[[:space:]]*\"[^"]*\"[[:space:]]*:[[:space:]]*HTTP'
+        # Servidores a Base de Datos (JDBC) (x2)
+          '\"[^"]*\"[[:space:]]*-->[[:space:]]*\"[^"]*\"[[:space:]]*:[[:space:]]*JDBC'
+          '\"[^"]*\"[[:space:]]*-->[[:space:]]*\"[^"]*\"[[:space:]]*:[[:space:]]*JDBC'
+        # Servidores a otros servicios (Geo/Reservas) - Sin protocolo específico según tu lista
+          '\"[^"]*\"[[:space:]]*-->[[:space:]]*\"[^"]*\"'
+        # Servicios a Sistemas Externos (HTTPS)
+          '\"[^"]*\"[[:space:]]*-->[[:space:]]*\"[^"]*\"[[:space:]]*:[[:space:]]*HTTPS'
           )
           
-          for rel in "${RELATIONS[@]}"; do
-          # -r: recursivo
-          # -q: modo silencioso
-          # -E: Extended Regex
-          if ! grep -rqE "$rel" diagrams/; then
-          echo "❌ CRITICAL: Missing relation matching pattern: $rel"
-            MISSING=$((MISSING+1))
+          # Nota: Como grep -c cuenta ocurrencias totales, validaremos 
+          # que existan las cantidades mínimas necesarias de cada patrón.
+          
+          check_min_count() {
+          local pattern=$1
+          local min=$2
+          local count=$(grep -rE "$pattern" diagrams/ | wc -l)
+          if [ "$count" -lt "$min" ]; then
+          echo "❌ CRITICAL: Se esperaban al menos $min conexiones del tipo [$pattern], pero se encontraron $count."
+            return 1
             fi
-            done
-            
-            if [ $MISSING -ne 0 ]; then
-          echo "Validation failed: $MISSING relations missing."
+            return 0
+          }
+
+          # Validamos cantidades según tu lista de requisitos:
+          # 4 relaciones HTTPS (Cliente->Net, Net->LB, Geo->Ext, Res->Ext)
+          check_min_count '\"[^"]*\"[[:space:]]*-->[[:space:]]*\"[^"]*\"[[:space:]]*:[[:space:]]*HTTPS' 4 || MISSING=$((MISSING+1))
+          
+          # 2 relaciones HTTP (LB -> Servidores)
+          check_min_count '\"[^"]*\"[[:space:]]*-->[[:space:]]*\"[^"]*\"[[:space:]]*:[[:space:]]*HTTP' 2 || MISSING=$((MISSING+1))
+          
+          # 2 relaciones JDBC (Servidores -> DB)
+          check_min_count '\"[^"]*\"[[:space:]]*-->[[:space:]]*\"[^"]*\"[[:space:]]*:[[:space:]]*JDBC' 2 || MISSING=$((MISSING+1))
+          
+          # 4 relaciones directas sin protocolo (Servidores -> Geo/Reservas)
+          # Buscamos conexiones simples que no tengan ":" al final
+          check_min_count '\"[^"]*\"[[:space:]]*-->[[:space:]]*\"[^"]*\"([[:space:]]*$|[^:])' 4 || MISSING=$((MISSING+1))
+          
+          if [ $MISSING -ne 0 ]; then
+          echo "Validation failed: La estructura del diagrama no cumple con los requisitos mínimos."
             exit 1
             fi
-            echo "✅ All regex patterns validated successfully."
+            echo "✅ Estructura validada correctamente (Basado en tipos de conexión)."
 
       - name: Generate PlantUML Diagrams
         uses: Timmy/plantuml-action@v1

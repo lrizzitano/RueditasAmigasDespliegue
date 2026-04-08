@@ -49,3 +49,36 @@
             echo "Validation failed: $MISSING relations missing."
             exit 1
           fi
+
+===============================
+echo "Validating mandatory relationships with Regex..."
+MISSING=0
+
+          # Array de expresiones regulares para validar la arquitectura
+          NODES=(
+            'node \"[^"]*\"'
+            'actor \"[^"]*\"'
+            'cloud \"[^"]*\"'
+            'database \"[^"]*\"'
+          )
+
+          RELATIONS=(
+            '\"[^"]*\"[[:space:]]*-->[[:space:]]*\"[^"]*\"[[:space:]]*:[[:space:]]*HTTP'
+            '\"[^"]*\"[[:space:]]*-->[[:space:]]*\"[^"]*\"[[:space:]]*:[[:space:]]*JDBC'
+          )
+          
+          for rel in "${RELATIONS[@]}"; do
+          # -r: recursivo
+          # -q: modo silencioso
+          # -E: Extended Regex
+          if ! grep -rqE "$rel" diagrams/; then
+          echo "❌ CRITICAL: Missing relation matching pattern: $rel"
+            MISSING=$((MISSING+1))
+            fi
+            done
+            
+            if [ $MISSING -ne 0 ]; then
+          echo "Validation failed: $MISSING relations missing."
+            exit 1
+            fi
+            echo "✅ All regex patterns validated successfully."
