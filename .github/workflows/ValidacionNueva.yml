@@ -5,7 +5,6 @@ name: Plant UML Diagram Generator
 
 on:
   push:
-    branches: [ master ]
 
 jobs:
   build:
