@@ -16,6 +16,7 @@ node "Servidor2RueditasAmigas"
 node "ServidorGeolocalizacion"
 node "ServidorReservas"
 database "BaseDeDatos"
+}
 
 "LoadBalancer" --> "Servidor1RueditasAmigas" : HTTP
 "LoadBalancer" --> "Servidor2RueditasAmigas" : HTTP
@@ -29,6 +30,6 @@ database "BaseDeDatos"
 "Internet" --> "LoadBalancer" : HTTPS
 "ServidorGeolocalizacion" --> "SistemaGeneradorDeRutas": HTTPS
 "ServidorReservas" --> "SistemaNotificacionProfesional"  : HTTPS
-}
+
 
 @enduml

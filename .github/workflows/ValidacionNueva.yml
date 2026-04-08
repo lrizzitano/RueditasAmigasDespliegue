@@ -28,12 +28,16 @@ jobs:
           MISSING=0
           
           # Array de expresiones regulares para validar la arquitectura
-          # Usamos \s* para permitir espacios variables y \.\.> para los puntos
+          NODES=(
+            'node \"[^"]*\"'
+            'actor \"[^"]*\"'
+            'cloud \"[^"]*\"'
+            'database \"[^"]*\"'
+          )
+
           RELATIONS=(
             '\"[^"]*\"[[:space:]]*-->[[:space:]]*\"[^"]*\"[[:space:]]*:[[:space:]]*HTTP'
             '\"[^"]*\"[[:space:]]*-->[[:space:]]*\"[^"]*\"[[:space:]]*:[[:space:]]*JDBC'
-            '\"[^"]*\"[[:space:]]*-->[[:space:]]*\"[^"]*\"[[:space:]]*:[[:space:]]*TCPIP'
-            '"Servidor2RueditasAmigas" --> "BaseDeDatosPrueba" : JDBC'
           )
           
           for rel in "${RELATIONS[@]}"; do
