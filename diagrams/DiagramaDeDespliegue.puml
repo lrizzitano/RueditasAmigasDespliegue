@@ -39,9 +39,6 @@ database "BaseDeDatos"
 "ServidorReservas" --> "SistemaNotificacionProfesional"  : HTTPS
 "ColaDeMensajes" --> "ServidorReservas": TCP/IP
 
-
-
-
 }
 
 
