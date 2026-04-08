@@ -31,6 +31,8 @@ jobs:
           # Usamos \s* para permitir espacios variables y \.\.> para los puntos
           RELATIONS=(
             '\"[^"]*\"[[:space:]]*-->[[:space:]]*\"[^"]*\"[[:space:]]*:[[:space:]]*HTTP'
+            '\"[^"]*\"[[:space:]]*-->[[:space:]]*\"[^"]*\"[[:space:]]*:[[:space:]]*JDBC'
+            '\"[^"]*\"[[:space:]]*-->[[:space:]]*\"[^"]*\"[[:space:]]*:[[:space:]]*TCPIP'
           )
           
           for rel in "${RELATIONS[@]}"; do
