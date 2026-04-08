@@ -30,7 +30,7 @@ jobs:
           # Array de expresiones regulares para validar la arquitectura
           # Usamos \s* para permitir espacios variables y \.\.> para los puntos
           RELATIONS=(
-          '"LoadBalancer"\s*\.\.>\s*"Servidor"\s*:\s*HTTP'
+          '"LoadBalancer"\s*\.\.>\s*"Servidor1RueditasAmigas"\s*:\s*HTTP'
           )
           
           for rel in "${RELATIONS[@]}"; do
