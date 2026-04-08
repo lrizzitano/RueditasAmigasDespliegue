@@ -37,19 +37,19 @@ jobs:
           )
 
           RELATIONS=(
-        # Cliente a Internet
+          # Cliente a Internet
           '\"[^"]*\"[[:space:]]*-->[[:space:]]*\"[^"]*\"[[:space:]]*:[[:space:]]*HTTPS'
-        # Internet a LoadBalancer
+          # Internet a LoadBalancer
           '\"[^"]*\"[[:space:]]*-->[[:space:]]*\"[^"]*\"[[:space:]]*:[[:space:]]*HTTPS'
-        # LoadBalancer a Servidores (x2)
+          # LoadBalancer a Servidores (x2)
           '\"[^"]*\"[[:space:]]*-->[[:space:]]*\"[^"]*\"[[:space:]]*:[[:space:]]*HTTP'
           '\"[^"]*\"[[:space:]]*-->[[:space:]]*\"[^"]*\"[[:space:]]*:[[:space:]]*HTTP'
-        # Servidores a Base de Datos (JDBC) (x2)
+          # Servidores a Base de Datos (JDBC) (x2)
           '\"[^"]*\"[[:space:]]*-->[[:space:]]*\"[^"]*\"[[:space:]]*:[[:space:]]*JDBC'
           '\"[^"]*\"[[:space:]]*-->[[:space:]]*\"[^"]*\"[[:space:]]*:[[:space:]]*JDBC'
-        # Servidores a otros servicios (Geo/Reservas) - Sin protocolo específico según tu lista
+          # Servidores a otros servicios (Geo/Reservas) - Sin protocolo específico según tu lista
           '\"[^"]*\"[[:space:]]*-->[[:space:]]*\"[^"]*\"'
-        # Servicios a Sistemas Externos (HTTPS)
+          # Servicios a Sistemas Externos (HTTPS)
           '\"[^"]*\"[[:space:]]*-->[[:space:]]*\"[^"]*\"[[:space:]]*:[[:space:]]*HTTPS'
           )
           
