@@ -1,41 +1,18 @@
-name: Validate PlantUML
+name: PlantUml Validation
 
 on:
   push:
+    paths:
+      - '**.puml'
 
 jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: FindPlantUMLfiles
+      - name: Run PlantUML Syntax Check
         run: |
-          mapfile -t FILES < <(git ls-files -- '*.puml' '*.plantuml' || true)
-          if [ ${#FILES[@]} -eq 0 ]; then
-            echo "no_files=true" >> "$GITHUB_OUTPUT"
-            echo "files="
-          else
-            printf "%s\n" "${FILES[@]}" > puml_files_list.txt
-            echo "no_files=false" >> "$GITHUB_OUTPUT"
-            echo "files=$(paste -sd ' ' puml_files_list.txt)" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Validate PlantUML by rendering
-        if: steps.find.outputs.no_files == 'false'
-        run: |
-          # Use official PlantUML image to render each file; if rendering fails the job fails.
-          IMAGE=plantuml/plantuml:latest
-          echo "Rendering files from repository root..."
-          while IFS= read -r f; do
-            echo "Rendering: $f"
-            docker run --rm -v "$PWD:/work" -w /work "$IMAGE" -pipe < "$f" > /dev/null || {
-              echo "::error file=$f::PlantUML rendering failed"
-              exit 1
-            }
-          done < puml_files_list.txt
-
-      - name: Skip if no PlantUML files
-        if: steps.find.outputs.no_files == 'true'
-        run: echo "No .puml/.plantuml files to validate."
+          # Usamos la imagen oficial para validar sin instalar Java manualmente
+          docker run --rm -v $(pwd):/data plantuml/plantuml:latest -syntax "/data/**.puml"
