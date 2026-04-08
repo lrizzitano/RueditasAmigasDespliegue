@@ -1,45 +1,34 @@
 @startuml
 'https://plantuml.com/deployment-diagram
 
-@startuml
 title Diagrama de Despliegue Rueditas Amigas
 
 node "SistemaGeneradorDeRutas"
 actor "Cliente"
-actor "DevOp"
 cloud "Internet"
 node "SistemaNotificacionProfesional"
 
 
 rectangle  {
 node "LoadBalancer"
-node "Servidor1RueditasAmigas" {
-
-}
+node "Servidor1RueditasAmigas"
 node "Servidor2RueditasAmigas"
-node "ServidorCacheGeolocalizacion"
+node "ServidorGeolocalizacion"
 node "ServidorReservas"
-node "Monitor"
-queue "ColaDeMensajes"
-database "Cache"
 database "BaseDeDatos"
 
 "LoadBalancer" --> "Servidor1RueditasAmigas" : HTTP
 "LoadBalancer" --> "Servidor2RueditasAmigas" : HTTP
 "Servidor1RueditasAmigas" --> "BaseDeDatos" : JDBC
 "Servidor2RueditasAmigas" --> "BaseDeDatos" : JDBC
-"Servidor1RueditasAmigas" --> "ColaDeMensajes" : TCP/IP
-"Servidor2RueditasAmigas" --> "ColaDeMensajes" : TCP/IP
-"Servidor1RueditasAmigas" --> "ServidorCacheGeolocalizacion"
-"Servidor2RueditasAmigas" --> "ServidorCacheGeolocalizacion"
+"Servidor1RueditasAmigas" --> "ServidorGeolocalizacion"
+"Servidor2RueditasAmigas" --> "ServidorGeolocalizacion"
+"Servidor1RueditasAmigas" --> "ServidorReservas"
+"Servidor2RueditasAmigas" --> "ServidorReservas"
 "Cliente" --> "Internet" : HTTPS
 "Internet" --> "LoadBalancer" : HTTPS
-"ServidorCacheGeolocalizacion" --> "Cache": JDBC
-"ServidorCacheGeolocalizacion" --> "SistemaGeneradorDeRutas": HTTPS
+"ServidorGeolocalizacion" --> "SistemaGeneradorDeRutas": HTTPS
 "ServidorReservas" --> "SistemaNotificacionProfesional"  : HTTPS
-"ColaDeMensajes" --> "ServidorReservas": TCP/IP
-
 }
-
 
 @enduml
