@@ -3,8 +3,13 @@
 
 name: Plant UML Diagram Generator
 
+permissions:
+  contents: write
+
 on:
   push:
+    branches:
+      - main
 
 jobs:
   build:
