@@ -30,6 +30,7 @@ jobs:
           # Array de expresiones regulares para validar la arquitectura
           NODES=(
             'node \"[^"]*\"'
+            'node \"[^"]*\"'
             'actor \"[^"]*\"'
             'cloud \"[^"]*\"'
             'database \"[^"]*\"'
