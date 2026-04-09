@@ -108,10 +108,8 @@ jobs:
       - name: Generate PlantUML Diagrams
         run: |
           mkdir -p output
-          wget https://github.com/plantuml/plantuml/releases/download/v1.2026.2/plantuml-1.2026.2.jar -O plantuml.jar         
+          wget -O /tmp/plantuml.jar "http://sourceforge.net/projects/plantuml/files/plantuml.jar/download"
           java -jar plantuml.jar diagrams/*.puml -o ../output/
-      
-          rm plantuml.jar
 
       - name: Commit & Push Changes
         run: |
