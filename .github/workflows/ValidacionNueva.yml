@@ -106,10 +106,11 @@ jobs:
           echo "🎉 Todas las relaciones validadas correctamente con nombres dinámicos."
 
       - name: Generate PlantUML Diagrams
-        uses: Timmy/plantuml-action@v1
-        with:
-          # These arguments go directly to the `plantuml` command. Output directory is relative to input. Reference: https://plantuml.com/command-line
-          args: 'diagrams/*.puml -o ../output/'
+        run: |
+          mkdir -p output
+          wget https://github.com/plantuml/plantuml/releases/download/v1.2024.3/plantuml-1.2024.3.jar -O plantuml.jar
+          java -jar plantuml.jar diagrams/*.puml -o ../output/
+          rm plantuml.jar
 
       - name: Commit & Push Changes
         run: |
