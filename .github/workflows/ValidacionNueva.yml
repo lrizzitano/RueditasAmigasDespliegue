@@ -41,6 +41,7 @@ jobs:
 
           # 2. Asignación estricta por nombre
                LB=$(get_node_name "LoadBalancer")
+               DB=$(get_node_name "DatabBase")
                SRV1=$(get_node_name "Servidor1")
                SRV2=$(get_node_name "Servidor2")
                GEO=$(get_node_name "Geolocalizacion")
@@ -53,10 +54,10 @@ jobs:
           INET=$(grep -oP 'cloud\s+"\K[^"]+' "$FILE" | head -1)
           
           echo "Variables detectadas:"
-          echo "  LoadBalancer: $LB_NAME"
+          echo "  LoadBalancer: $LB"
           echo "  Servidor 1: $SRV1"
           echo "  Servidor 2: $SRV2"
-          echo "  DB: $DB_NAME"
+          echo "  DB: $DB"
           echo "  Cliente: $CLIENT"
           echo "  Internet: $INET"
 
