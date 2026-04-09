@@ -25,7 +25,7 @@ jobs:
       - name: Validate Diagram Relations
         run: |
 
-      # 1. Encontrar el archivo
+          # 1. Encontrar el archivo
           FILE=$(find diagrams/ -maxdepth 1 -name "*.puml" | head -1)
           if [ -z "$FILE" ]; then echo "❌ No .puml file found"; exit 1; fi
 
