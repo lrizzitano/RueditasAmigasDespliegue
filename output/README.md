@@ -1,59 +1,32 @@
-          /*
-          # We define the required patterns as Regex
-          # 1. LoadBalancer -> Server pattern
-          # 2. Server -> Database pattern
-          # 3. Internet/Cloud to LoadBalancer
-          
-          DIAGRAM_FILE="diagrams/" # Change to your actual path
-          
-          echo "Validating architectural patterns..."
-          
-          # Check for Load Balancer connection
-          grep -qP '"LoadBalancer" --> "Servidor1RueditasAmigas" : HTTP' $DIAGRAM_FILE || { echo "❌ Missing LoadBalancer pattern"; exit 1; }
-          
-          # Check for Database connection
-          grep -qP 'Servidor.*-->.*BaseDeDatos' $DIAGRAM_FILE || { echo "❌ Missing Database connection pattern"; exit 1; }
-          
-          # Check for Internet/Cloud and HTTPS
-          grep -qE 'cloud|Internet' $DIAGRAM_FILE || { echo "❌ Missing Internet/Cloud component"; exit 1; }
-          grep -q "HTTPS" $DIAGRAM_FILE || { echo "❌ Missing HTTPS definition"; exit 1; }
-          
-          echo "✅ Architecture structure matches requirements."
-          */
+# This is a GitHub Workflow configuration
+# Sytnax reference: https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions
 
+name: Plant UML Diagram Generator
 
+permissions:
+contents: write
 
-          echo "Validating mandatory relationships..."
+on:
+push:
+branches:
+- main
+
+jobs:
+build:
+
+    runs-on: ubuntu-latest
+    #    Check to make sure the commit doesn't contain "ci-skip"
+    if: "!contains(github.event.head_commit.message, 'ci-skip')"
+    
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+
+      - name: Validate Diagram Relations
+        run: |
+          echo "Validating mandatory relationships with Regex..."
           MISSING=0
-  
-          # Array of mandatory strings to find in the diagrams folder
-          RELATIONS=(
-            '"LoadBalancer" ..> "Monitor"'
-            '"Servidor1RueditasAmigas" ..> "Monitor"'
-            '"Servidor2RueditasAmigas" ..> "Monitor"'
-            '"ServidorCacheGeolocalizacion" ..> "Monitor"'
-           '"ServidorReservas" ..> "Monitor"'
-            '"DevOp" --> "Monitor" : HTTPS'
-          )
-  
-          for rel in "${RELATIONS[@]}"; do
-            # Search recursively in the diagrams folder
-            if ! grep -rqF "$rel" diagrams/; then
-              echo "❌ CRITICAL:
-              Missing relation: $rel"
-              MISSING=$((MISSING+1))
-            fi
-          done
-  
-          if [ $MISSING -ne 0 ]; then
-            echo "Validation failed: $MISSING relations missing."
-            exit 1
-          fi
-
-===============================
-echo "Validating mandatory relationships with Regex..."
-MISSING=0
-
+          
           # Array de expresiones regulares para validar la arquitectura
           NODES=(
             'node \"[^"]*\"'
@@ -63,22 +36,105 @@ MISSING=0
           )
 
           RELATIONS=(
-            '\"[^"]*\"[[:space:]]*-->[[:space:]]*\"[^"]*\"[[:space:]]*:[[:space:]]*HTTP'
-            '\"[^"]*\"[[:space:]]*-->[[:space:]]*\"[^"]*\"[[:space:]]*:[[:space:]]*JDBC'
+          # Cliente a Internet
+          '\"[^"]*\"[[:space:]]*-->[[:space:]]*\"[^"]*\"[[:space:]]*:[[:space:]]*HTTPS'
+          # Internet a LoadBalancer
+          '\"[^"]*\"[[:space:]]*-->[[:space:]]*\"[^"]*\"[[:space:]]*:[[:space:]]*HTTPS'
+          # LoadBalancer a Servidores (x2)
+          '\"[^"]*\"[[:space:]]*-->[[:space:]]*\"[^"]*\"[[:space:]]*:[[:space:]]*HTTP'
+          '\"[^"]*\"[[:space:]]*-->[[:space:]]*\"[^"]*\"[[:space:]]*:[[:space:]]*HTTP'
+          # Servidores a Base de Datos (JDBC) (x2)
+          '\"[^"]*\"[[:space:]]*-->[[:space:]]*\"[^"]*\"[[:space:]]*:[[:space:]]*JDBC'
+          '\"[^"]*\"[[:space:]]*-->[[:space:]]*\"[^"]*\"[[:space:]]*:[[:space:]]*JDBC'
+          # Servidores a otros servicios (Geo/Reservas) - Sin protocolo específico según tu lista
+          '\"[^"]*\"[[:space:]]*-->[[:space:]]*\"[^"]*\"'
+          # Servicios a Sistemas Externos (HTTPS)
+          '\"[^"]*\"[[:space:]]*-->[[:space:]]*\"[^"]*\"[[:space:]]*:[[:space:]]*HTTPS'
           )
           
-          for rel in "${RELATIONS[@]}"; do
-          # -r: recursivo
-          # -q: modo silencioso
-          # -E: Extended Regex
-          if ! grep -rqE "$rel" diagrams/; then
-          echo "❌ CRITICAL: Missing relation matching pattern: $rel"
-            MISSING=$((MISSING+1))
+          # Nota: Como grep -c cuenta ocurrencias totales, validaremos 
+          # que existan las cantidades mínimas necesarias de cada patrón.
+          
+          check_min_count() {
+          local pattern=$1
+          local min=$2
+          local count=$(grep -rE "$pattern" diagrams/ | wc -l)
+          if [ "$count" -lt "$min" ]; then
+          echo "❌ CRITICAL: Se esperaban al menos $min conexiones del tipo [$pattern], pero se encontraron $count."
+            return 1
             fi
-            done
-            
-            if [ $MISSING -ne 0 ]; then
-          echo "Validation failed: $MISSING relations missing."
+          echo "✅ OK: Se esperaban al menos $min conexiones del tipo [$pattern], y se encontraron $count."
+            return 0
+          }
+
+          # Validamos cantidades según tu lista de requisitos:
+          # 4 relaciones HTTPS (Cliente->Net, Net->LB, Geo->Ext, Res->Ext)
+          check_min_count '\"[^"]*\"[[:space:]]*-->[[:space:]]*\"[^"]*\"[[:space:]]*:[[:space:]]*HTTPS' 4 || MISSING=$((MISSING+1))
+          
+          # 2 relaciones HTTP (LB -> Servidores)
+          check_min_count '\"[^"]*\"[[:space:]]*-->[[:space:]]*\"[^"]*\"[[:space:]]*:[[:space:]]*HTTP' 2 || MISSING=$((MISSING+1))
+          
+          # 2 relaciones JDBC (Servidores -> DB)
+          check_min_count '\"[^"]*\"[[:space:]]*-->[[:space:]]*\"[^"]*\"[[:space:]]*:[[:space:]]*JDBC' 2 || MISSING=$((MISSING+1))
+          
+          # 4 relaciones directas sin protocolo (Servidores -> Geo/Reservas)
+          # Buscamos conexiones simples que no tengan ":" al final
+          check_min_count '\"[^"]*\"[[:space:]]*-->[[:space:]]*\"[^"]*\"([[:space:]]*$|[^:])' 4 || MISSING=$((MISSING+1))
+          
+          
+          # Buscamos el primer archivo .puml para trabajar sobre él
+          FILE=$(find diagrams/ -maxdepth 1 -name "*.puml" | head -1)
+          
+          if [ -z "$FILE" ]; then
+          echo "❌ Error: No se encontraron archivos .puml en diagrams/"
+          exit 1
+          fi
+      
+          echo "Procesando archivo: $FILE"
+          echo "Extrayendo nombres de componentes..."
+      
+          # Extraemos el contenido dentro de las comillas para cada tipo de nodo
+          # El comando busca el patrón (ej: node ") y captura todo hasta la siguiente "
+          
+          LB_NAME=$(grep -oP 'node\s+"\K[^"]+(?=".*LoadBalancer)' $FILE || grep -oP 'node\s+"\K[^"]+(?=")' $FILE | head -1)
+          SRV1=$(grep -oP 'node\s+"\K[^"]+(?=".*Servidor1)' $FILE || sed -n 's/.*node[[:space:]]*"\([^"]*\)".*/\1/p' $FILE | sed -n '2p')
+          SRV2=$(grep -oP 'node\s+"\K[^"]+(?=".*Servidor2)' $FILE || sed -n 's/.*node[[:space:]]*"\([^"]*\)".*/\1/p' $FILE | sed -n '3p')
+          DB_NAME=$(grep -oP 'database\s+"\K[^"]+(?=")' $FILE | head -1)
+          CLIENT=$(grep -oP 'actor\s+"\K[^"]+(?=")' $FILE | head -1)
+          INET=$(grep -oP 'cloud\s+"\K[^"]+(?=")' $FILE | head -1)
+      
+          echo "Variables detectadas:"
+          echo "  LoadBalancer: $LB_NAME"
+          echo "  Servidor 1: $SRV1"
+          echo "  Servidor 2: $SRV2"
+          echo "  DB: $DB_NAME"
+          echo "  Cliente: $CLIENT"
+          echo "  Internet: $INET"
+          
+          check_min_count 'node \"[^"]*\"' 1 || MISSING=$((MISSING+1))
+          check_min_count 'actor \"[^"]*\"' 1 || MISSING=$((MISSING+1))
+          check_min_count 'cloud \"[^"]*\"' 1 || MISSING=$((MISSING+1))
+          check_min_count 'database \"[^"]*\"' 1 || MISSING=$((MISSING+1))  
+                    
+          if [ $MISSING -ne 0 ]; then
+          echo "Validation failed: La estructura del diagrama no cumple con los requisitos mínimos."
             exit 1
             fi
-            echo "✅ All regex patterns validated successfully."
+            echo "✅ Estructura validada correctamente (Basado en tipos de conexión)."
+
+      - name: Generate PlantUML Diagrams
+        uses: Timmy/plantuml-action@v1
+        with:
+          # These arguments go directly to the `plantuml` command. Output directory is relative to input. Reference: https://plantuml.com/command-line
+          args: 'diagrams/*.puml -o ../output/'
+
+      - name: Commit & Push Changes
+        run: |
+          # Before attempting to commit changes, make sure something has changed
+          if [[ `git status --porcelain` ]]; then
+              git config --local user.email "action@github.com"
+              git config --local user.name "GitHub Action"
+              git add output/
+              git commit -am "[ci-skip] Push changes"
+              git push
+          fi
