@@ -45,8 +45,8 @@ jobs:
                SRV2=$(get_node_name "Servidor2")
                GEO=$(get_node_name "Geolocalizacion")
                RES=$(get_node_name "Reservas")
-               NOTI=$(get_node_name "Notificacion")
-               RUTA=$(get_node_name "Ruta")
+               EXT_NOTI=$(get_node_name "Notificacion")
+               EXT_RUTA=$(get_node_name "Ruta")
           
           DB=$(grep -oP 'database\s+"\K[^"]+' "$FILE" | head -1)
           CLIENT=$(grep -oP 'actor\s+"\K[^"]+' "$FILE" | head -1)
@@ -65,9 +65,9 @@ jobs:
           check_rel() {
             local pattern="\"$1\"[[:space:]]*-->[[:space:]]*\"$2\"$3"
             if grep -qE "$pattern" "$FILE"; then
-              echo "✅ OK: $1 -> $2 $3"
+              echo "✅ OK: $1 -> $2"
             else
-              echo "❌ MISSING: $1 -> $2 $3"
+              echo "❌ MISSING: $1 -> $2"
               MISSING=$((MISSING+1))
             fi
           }
