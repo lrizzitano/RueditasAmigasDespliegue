@@ -23,7 +23,6 @@ database "BaseDeDatos"
 "Servidor1RueditasAmigas" --> "BaseDeDatos" : JDBC
 "Servidor2RueditasAmigas" --> "BaseDeDatos" : JDBC
 "Servidor1RueditasAmigas" --> "ServidorGeolocalizacion"
-"Servidor2RueditasAmigas" --> "ServidorGeolocalizacion"
 "Servidor1RueditasAmigas" --> "ServidorReservas"
 "Servidor2RueditasAmigas" --> "ServidorReservas"
 "Cliente" --> "Internet" : HTTPS
