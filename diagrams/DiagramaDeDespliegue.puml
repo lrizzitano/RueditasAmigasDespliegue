@@ -27,7 +27,6 @@ database "BaseDeDatos"
 "Servidor1RueditasAmigas" --> "ServidorReservas"
 "Servidor2RueditasAmigas" --> "ServidorReservas"
 "Cliente" --> "Internet" : HTTPS
-"Internet" --> "LoadBalancer" : HTTPS
 "ServidorGeolocalizacion" --> "SistemaGeneradorDeRutas": HTTPS
 "ServidorReservas" --> "SistemaNotificacionProfesional"  : HTTPS
 
