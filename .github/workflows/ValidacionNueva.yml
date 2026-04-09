@@ -28,9 +28,9 @@ jobs:
           # 1. Encontrar el archivo
           FILE=$(find diagrams/ -maxdepth 1 -name "*.puml" | head -1)
           if [ -z "$FILE" ]; then echo "❌ No .puml file found"; exit 1; fi
-
+  
           echo "🔍 Analizando componentes en: $FILE"
-
+  
           # Función para extraer el nombre exacto de un nodo basado en una palabra clave
                get_node_name() {
                local keyword=$1
@@ -39,19 +39,18 @@ jobs:
                grep -i "node" "$FILE" | grep -i "$keyword" | grep -oP '(?<=")[^"]+(?=")' | head -1
                }
 
-          # 2. Asignación estricta por nombre
-               LB=$(get_node_name "LoadBalancer")
-               DB=$(get_node_name "DatabBase")
-               SRV1=$(get_node_name "Servidor1")
-               SRV2=$(get_node_name "Servidor2")
-               GEO=$(get_node_name "Geolocalizacion")
-               RES=$(get_node_name "Reservas")
-               EXT_NOTI=$(get_node_name "Notificacion")
-               EXT_RUTA=$(get_node_name "Ruta")
-          
-          DB=$(grep -oP 'database\s+"\K[^"]+' "$FILE" | head -1)
-          CLIENT=$(grep -oP 'actor\s+"\K[^"]+' "$FILE" | head -1)
-          INET=$(grep -oP 'cloud\s+"\K[^"]+' "$FILE" | head -1)
+          # Asignación por nombre
+           LB=$(get_node_name "LoadBalancer")
+           DB=$(get_node_name "DatabBase")
+           SRV1=$(get_node_name "Servidor1")
+           SRV2=$(get_node_name "Servidor2")
+           GEO=$(get_node_name "Geolocalizacion")
+           RES=$(get_node_name "Reservas")
+           EXT_NOTI=$(get_node_name "Notificacion")
+           EXT_RUTA=$(get_node_name "Ruta")
+           DB=$(grep -oP 'database\s+"\K[^"]+' "$FILE" | head -1)
+           CLIENT=$(grep -oP 'actor\s+"\K[^"]+' "$FILE" | head -1)
+           INET=$(grep -oP 'cloud\s+"\K[^"]+' "$FILE" | head -1)
           
           echo "Variables detectadas:"
           echo "  LoadBalancer: $LB"
@@ -61,7 +60,7 @@ jobs:
           echo "  Cliente: $CLIENT"
           echo "  Internet: $INET"
 
-          # 3. Función de validación de relación exacta
+          # Función de validación de relación
           MISSING=0
           check_rel() {
             local pattern="\"$1\"[[:space:]]*-->[[:space:]]*\"$2\"$3"
@@ -73,7 +72,7 @@ jobs:
             fi
           }
 
-          # 4. LAS 12 VERIFICACIONES OBLIGATORIAS
+          # Verificaciones obligatorias
           echo "Validando relaciones críticas..."
           
           # Balanceador a Servidores
