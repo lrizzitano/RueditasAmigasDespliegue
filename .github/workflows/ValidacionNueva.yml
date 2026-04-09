@@ -31,15 +31,23 @@ jobs:
 
           echo "🔍 Analizando componentes en: $FILE"
 
-          # 2. Extracción dinámica de nombres (Mapeo de variables)
-          # Buscamos por palabras clave dentro del nombre para asignar el rol correcto
-          LB=$(grep -oP 'node\s+"\K[^"]*(?=.*LoadBalancer)' "$FILE" || grep -oP 'node\s+"\K[^"]+' "$FILE")
-          SRV1=$(grep -oP 'node\s+"\K[^"]*(?=.*Servidor1)' "$FILE" || grep -oP 'node\s+"\K[^"]+' "$FILE")
-          SRV2=$(grep -oP 'node\s+"\K[^"]*(?=.*Servidor2)' "$FILE" || grep -oP 'node\s+"\K[^"]+' "$FILE")
-          GEO=$(grep -oP 'node\s+"\K[^"]*(?=.*Geolocalizacion)' "$FILE" || grep -oP 'node\s+"\K[^"]+' "$FILE")
-          RES=$(grep -oP 'node\s+"\K[^"]*(?=.*Reservas)' "$FILE" || grep -oP 'node\s+"\K[^"]+' "$FILE")
-          EXT_RUTA=$(grep -oP 'node\s+"\K[^"]*(?=.*GeneradorDeRutas)' "$FILE" || echo "SistemaGeneradorDeRutas")
-          EXT_NOTI=$(grep -oP 'node\s+"\K[^"]*(?=.*Notificacion)' "$FILE" || echo "SistemaNotificacionProfesional")
+          # Función para extraer el nombre exacto de un nodo basado en una palabra clave
+               get_node_name() {
+               local keyword=$1
+          
+          # Busca una línea que empiece con node, busque la palabra clave y extraiga lo que hay entre comillas
+               grep -i "node" "$FILE" | grep -i "$keyword" | grep -oP '(?<=")[^"]+(?=")' | head -1
+               }
+
+          # 2. Asignación estricta por nombre
+               LB=$(get_node_name "LoadBalancer")
+               SRV1=$(get_node_name "Servidor1")
+               SRV2=$(get_node_name "Servidor2")
+               GEO=$(get_node_name "Geolocalizacion")
+               RES=$(get_node_name "Reservas")
+               NOTI=$(get_node_name "Notificacion")
+               RUTA=$(get_node_name "Ruta")
+          
           DB=$(grep -oP 'database\s+"\K[^"]+' "$FILE" | head -1)
           CLIENT=$(grep -oP 'actor\s+"\K[^"]+' "$FILE" | head -1)
           INET=$(grep -oP 'cloud\s+"\K[^"]+' "$FILE" | head -1)
