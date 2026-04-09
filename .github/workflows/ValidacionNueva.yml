@@ -82,7 +82,15 @@ jobs:
           check_min_count '\"[^"]*\"[[:space:]]*-->[[:space:]]*\"[^"]*\"([[:space:]]*$|[^:])' 4 || MISSING=$((MISSING+1))
           
           
-          FILE="diagrams/" # Ajusta a tu archivo
+          # Buscamos el primer archivo .puml para trabajar sobre él
+          FILE=$(find diagrams/ -maxdepth 1 -name "*.puml" | head -1)
+          
+          if [ -z "$FILE" ]; then
+          echo "❌ Error: No se encontraron archivos .puml en diagrams/"
+          exit 1
+          fi
+      
+          echo "Procesando archivo: $FILE"
           echo "Extrayendo nombres de componentes..."
       
           # Extraemos el contenido dentro de las comillas para cada tipo de nodo
