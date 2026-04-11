@@ -121,3 +121,127 @@ ValidateDiagram:
               git commit -am "DiagramaGeneradoCorrectamente"
               git push
           fi
+
+------------------
+# This is a GitHub Workflow configuration
+# Sytnax reference: https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions
+
+name: Plant UML Diagram Generator
+
+permissions:
+contents: write
+
+on:
+push:
+branches:
+- main
+
+jobs:
+ValidateDiagram:
+
+    runs-on: ubuntu-latest
+    #    Check to make sure the commit doesn't contain "ci-skip"
+    if: "!contains(github.event.head_commit.message, 'ci-skip')"
+    
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+
+      - name: Validate Diagram Relations
+        run: |
+
+          # Encontrar el archivo
+          FILE=$(find diagrams/ -maxdepth 1 -name "*.puml" | head -1)
+          if [ -z "$FILE" ]; then echo "❌ No .puml file found"; exit 1; fi
+  
+          echo "🔍 Analizando componentes en: $FILE"
+  
+          # Función para extraer el nombre exacto de un nodo basado en una palabra clave
+               get_node_name() {
+               local keyword=$1
+          
+          # Busca una línea que empiece con node, busque la palabra clave y extraiga lo que hay entre comillas
+               grep -i "node" "$FILE" | grep -i "$keyword" | grep -oP '(?<=")[^"]+(?=")' | head -1
+               }
+
+          # Asignación por nombre
+           LB=$(get_node_name "LoadBalancer")
+           DB=$(get_node_name "DatabBase")
+           SRV1=$(get_node_name "Servidor1")
+           SRV2=$(get_node_name "Servidor2")
+           EXT_NOTI=$(get_node_name "Notificacion")
+           EXT_RUTA=$(get_node_name "Ruta")
+           DB=$(grep -oP 'database\s+"\K[^"]+' "$FILE" | head -1)
+           CLIENT=$(grep -oP 'actor\s+"\K[^"]+' "$FILE" | head -1)
+           INET=$(grep -oP 'cloud\s+"\K[^"]+' "$FILE" | head -1)
+          
+          echo "Variables detectadas:"
+          echo "  LoadBalancer: $LB"
+          echo "  Servidor 1: $SRV1"
+          echo "  Servidor 2: $SRV2"
+          echo "  DB: $DB"
+          echo "  Cliente: $CLIENT"
+          echo "  Internet: $INET"
+
+          # Función de validación de relación
+          MISSING=0
+          check_rel() {
+            local pattern="\"$1\"[[:space:]]*-->[[:space:]]*\"$2\"$3"
+            if grep -qE "$pattern" "$FILE"; then
+              echo "✅ OK: $1 -> $2"
+            else
+              echo "❌ MISSING: $1 -> $2"
+              MISSING=$((MISSING+1))
+            fi
+          }
+
+          # Verificaciones obligatorias
+          echo "Validando relaciones críticas..."
+          
+          # Balanceador a Servidores
+          check_rel "$LB" "$SRV1" "[[:space:]]*:[[:space:]]*"
+          check_rel "$LB" "$SRV2" "[[:space:]]*:[[:space:]]*"
+          
+          # Servidores a DB
+          check_rel "$SRV1" "$DB" "[[:space:]]*:[[:space:]]*"
+          check_rel "$SRV2" "$DB" "[[:space:]]*:[[:space:]]*"
+          
+          # Servidores a Servicios Internos y Externos (Sin protocolo específico)
+          check_rel "$SRV1" "$EXT_RUTA" "[[:space:]]*:[[:space:]]*"
+          check_rel "$SRV2" "$EXT_RUTA" "[[:space:]]*:[[:space:]]*"
+          check_rel "$SRV1" "$EXT_NOTI" "[[:space:]]*:[[:space:]]*"
+          check_rel "$SRV2" "$EXT_NOTI" "[[:space:]]*:[[:space:]]*"
+          
+          # Cliente e Internet
+          check_rel "$CLIENT" "$INET" "[[:space:]]*:[[:space:]]*"
+          check_rel "$INET" "$LB" "[[:space:]]*:[[:space:]]*"
+          
+          # 5. Resultado Final
+          if [ $MISSING -ne 0 ]; then
+            echo "❌ Error: Faltan $MISSING relaciones obligatorias."
+            exit 1
+          fi
+          echo "🎉 Todas las relaciones validadas correctamente con nombres dinámicos."
+
+      - name: Install Graphviz
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y graphviz
+
+      - name: Generate PlantUML Diagrams
+        run: |
+          wget -O plantuml.jar "https://github.com/plantuml/plantuml/releases/download/v1.2024.3/plantuml-1.2024.3.jar"
+          java -jar plantuml.jar diagrams/*.puml -o ../output/
+          
+          rm plantuml.jar
+
+      - name: Commit & Push Changes
+        run: |
+          # Before attempting to commit changes, make sure something has changed
+          if [[ `git status --porcelain` ]]; then
+              git config --local user.email "action@github.com"
+              git config --local user.name "GitHub Action"
+              git add output/
+              git commit -am "DiagramaGeneradoCorrectamente"
+              git push
+          fi

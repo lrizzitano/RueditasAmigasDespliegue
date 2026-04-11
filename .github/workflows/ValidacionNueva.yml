@@ -60,13 +60,22 @@ jobs:
 
           # Función de validación de relación
           MISSING=0
+          
           check_rel() {
-            local pattern="\"$1\"[[:space:]]*-->[[:space:]]*\"$2\"$3"
-            if grep -qE "$pattern" "$FILE"; then
-              echo "✅ OK: $1 -> $2"
+          local protocol_regex="([[:space:]]*:[[:space:]]*HTTP)?"
+          
+          # Se puede pasar el protocolo como 4to argumento pero es opcional
+          if [ ! -z "$4" ]; then
+          protocol_regex="([[:space:]]*:[[:space:]]*$4)?"
+          fi
+          
+          local pattern="\"$1\"[[:space:]]*-->[[:space:]]*\"$2\"$protocol_regex[[:space:]]*$"
+          
+          if grep -qE "$pattern" "$FILE"; then
+          echo "✅ OK: $1 -> $2 (Protocolo válido o vacío)"
             else
-              echo "❌ MISSING: $1 -> $2"
-              MISSING=$((MISSING+1))
+          echo "❌ ERROR: $1 -> $2 tiene un protocolo inválido o no existe. (Solo se permite HTTP u omitirlo)"
+            MISSING=$((MISSING+1))
             fi
           }
 
@@ -74,22 +83,22 @@ jobs:
           echo "Validando relaciones críticas..."
           
           # Balanceador a Servidores
-          check_rel "$LB" "$SRV1" "[[:space:]]*:[[:space:]]*"
-          check_rel "$LB" "$SRV2" "[[:space:]]*:[[:space:]]*"
+          check_rel "$LB" "$SRV1" "HTTP"
+          check_rel "$LB" "$SRV2" "HTTP"
           
           # Servidores a DB
-          check_rel "$SRV1" "$DB" "[[:space:]]*:[[:space:]]*"
-          check_rel "$SRV2" "$DB" "[[:space:]]*:[[:space:]]*"
+          check_rel "$SRV1" "$DB" "JDBC"
+          check_rel "$SRV2" "$DB" "JDBC"
           
           # Servidores a Servicios Internos y Externos (Sin protocolo específico)
-          check_rel "$SRV1" "$EXT_RUTA" "[[:space:]]*:[[:space:]]*"
-          check_rel "$SRV2" "$EXT_RUTA" "[[:space:]]*:[[:space:]]*"
-          check_rel "$SRV1" "$EXT_NOTI" "[[:space:]]*:[[:space:]]*"
-          check_rel "$SRV2" "$EXT_NOTI" "[[:space:]]*:[[:space:]]*"
+          check_rel "$SRV1" "$EXT_RUTA" "HTTPS"
+          check_rel "$SRV2" "$EXT_RUTA" "HTTPS"
+          check_rel "$SRV1" "$EXT_NOTI" "HTTPS"
+          check_rel "$SRV2" "$EXT_NOTI" "HTTPS"
           
           # Cliente e Internet
-          check_rel "$CLIENT" "$INET" "[[:space:]]*:[[:space:]]*"
-          check_rel "$INET" "$LB" "[[:space:]]*:[[:space:]]*"
+          check_rel "$CLIENT" "$INET" "HTTPS"
+          check_rel "$INET" "$LB" "HTTPS"
           
           # 5. Resultado Final
           if [ $MISSING -ne 0 ]; then
