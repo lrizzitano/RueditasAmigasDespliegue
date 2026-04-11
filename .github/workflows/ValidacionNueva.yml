@@ -128,7 +128,7 @@ jobs:
           
           
           # --- PASO 2: Validar relaciones NO autorizadas ---
-          
+          echo "Validando relaciones no autorizadas..."
           # Extraemos todas las líneas que contienen flechas "-->"
           # y las procesamos para ver si están en nuestra lista blanca
           while read -r line; do
@@ -149,7 +149,7 @@ jobs:
               echo "🚫 Relacion no permitida: $line"
               UNAUTHORIZED=$((UNAUTHORIZED+1))
             fi
-          done < <(grep "->" "$FILE")
+          done < <(grep "-->" "$FILE")
 
           # 5. Resultado Final
           if [ $MISSING -ne 0 ] || [ $UNAUTHORIZED -ne 0 ]; then
