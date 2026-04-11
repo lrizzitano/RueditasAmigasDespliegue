@@ -13,21 +13,21 @@ rectangle  {
 node "LoadBalancer"
 node "Servidor1RueditasAmigas"
 node "Servidor2RueditasAmigas"
-node "ServidorGeolocalizacion"
 node "ServidorReservas"
 database "BaseDeDatos"
+database "BaseDeDatos2"
 }
 
 "LoadBalancer" --> "Servidor1RueditasAmigas" : HTTP
 "LoadBalancer" --> "Servidor2RueditasAmigas" : HTTP
 "Servidor1RueditasAmigas" --> "BaseDeDatos" : JDBC
 "Servidor2RueditasAmigas" --> "BaseDeDatos" : JDBC
-"Servidor1RueditasAmigas" --> "ServidorGeolocalizacion"
-"Servidor2RueditasAmigas" --> "ServidorGeolocalizacion"
+"Servidor1RueditasAmigas" --> "SistemaGeneradorDeRutas"
+"Servidor2RueditasAmigas" --> "SistemaGeneradorDeRutas"
 "Servidor1RueditasAmigas" --> "ServidorReservas"
 "Servidor2RueditasAmigas" --> "ServidorReservas"
 "Cliente" --> "Internet" : HTTPS
-"ServidorGeolocalizacion" --> "SistemaGeneradorDeRutas": HTTPS
+"ServidorReservas" --> "BaseDeDatos2": JDBC
 "ServidorReservas" --> "SistemaNotificacionProfesional"  : HTTPS
 
 
