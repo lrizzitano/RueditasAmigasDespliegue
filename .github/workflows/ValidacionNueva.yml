@@ -44,8 +44,6 @@ jobs:
            DB=$(get_node_name "DatabBase")
            SRV1=$(get_node_name "Servidor1")
            SRV2=$(get_node_name "Servidor2")
-           GEO=$(get_node_name "Geolocalizacion")
-           RES=$(get_node_name "Reservas")
            EXT_NOTI=$(get_node_name "Notificacion")
            EXT_RUTA=$(get_node_name "Ruta")
            DB=$(grep -oP 'database\s+"\K[^"]+' "$FILE" | head -1)
@@ -83,19 +81,15 @@ jobs:
           check_rel "$SRV1" "$DB" "[[:space:]]*:[[:space:]]*JDBC"
           check_rel "$SRV2" "$DB" "[[:space:]]*:[[:space:]]*JDBC"
           
-          # Servidores a Servicios Internos (Sin protocolo específico)
-          check_rel "$SRV1" "$GEO" ""
-          check_rel "$SRV2" "$GEO" ""
-          check_rel "$SRV1" "$RES" ""
-          check_rel "$SRV2" "$RES" ""
+          # Servidores a Servicios Internos y Externos (Sin protocolo específico)
+          check_rel "$SRV1" "$EXT_RUTA" "[[:space:]]*:[[:space:]]*"
+          check_rel "$SRV2" "$EXT_RUTA" "[[:space:]]*:[[:space:]]*"
+          check_rel "$SRV1" "$EXT_NOTI" "[[:space:]]*:[[:space:]]*HTTPS"
+          check_rel "$SRV2" "$EXT_NOTI" "[[:space:]]*:[[:space:]]*HTTPS"
           
           # Cliente e Internet
           check_rel "$CLIENT" "$INET" "[[:space:]]*:[[:space:]]*HTTPS"
           check_rel "$INET" "$LB" "[[:space:]]*:[[:space:]]*HTTPS"
-          
-          # Salida a Sistemas Externos
-          check_rel "$GEO" "$EXT_RUTA" "[[:space:]]*:[[:space:]]*HTTPS"
-          check_rel "$RES" "$EXT_NOTI" "[[:space:]]*:[[:space:]]*HTTPS"
           
           # 5. Resultado Final
           if [ $MISSING -ne 0 ]; then
