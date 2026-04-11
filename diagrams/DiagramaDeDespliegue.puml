@@ -16,10 +16,10 @@ node "Servidor2RueditasAmigas"
 database "BaseDeDatos"
 }
 
-"LoadBalancer" --> "Servidor1RueditasAmigas"
+"LoadBalancer" --> "Servidor1RueditasAmigas" : "JDBC"
 "LoadBalancer" --> "Servidor2RueditasAmigas"
 "Servidor1RueditasAmigas" --> "BaseDeDatos"
-"Servidor2RueditasAmigas" --> "BaseDeDatos"
+"Servidor2RueditasAmigas" --> "BaseDeDatos" : "HTTP"
 "Servidor1RueditasAmigas" --> "SistemaNotificacionProfesional"
 "Servidor2RueditasAmigas" --> "SistemaNotificacionProfesional"
 "Servidor1RueditasAmigas" --> "SistemaGeneradorDeRutas"
