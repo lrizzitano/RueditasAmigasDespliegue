@@ -149,7 +149,7 @@ jobs:
               echo "🚫 Relacion no permitida: $line"
               UNAUTHORIZED=$((UNAUTHORIZED+1))
             fi
-          done < <(grep "-->" "$FILE")
+          done < <(grep "->" "$FILE")
 
           # 5. Resultado Final
           if [ $MISSING -ne 0 ] || [ $UNAUTHORIZED -ne 0 ]; then
