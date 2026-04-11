@@ -13,22 +13,19 @@ rectangle  {
 node "LoadBalancer"
 node "Servidor1RueditasAmigas"
 node "Servidor2RueditasAmigas"
-node "ServidorGeolocalizacion"
-node "ServidorReservas"
 database "BaseDeDatos"
 }
 
-"LoadBalancer" --> "Servidor1RueditasAmigas" : HTTP
-"LoadBalancer" --> "Servidor2RueditasAmigas" : HTTP
-"Servidor1RueditasAmigas" --> "BaseDeDatos" : JDBC
-"Servidor2RueditasAmigas" --> "BaseDeDatos" : JDBC
-"Servidor1RueditasAmigas" --> "ServidorGeolocalizacion"
-"Servidor2RueditasAmigas" --> "ServidorGeolocalizacion"
-"Servidor1RueditasAmigas" --> "ServidorReservas"
-"Servidor2RueditasAmigas" --> "ServidorReservas"
-"Cliente" --> "Internet" : HTTPS
-"ServidorGeolocalizacion" --> "SistemaGeneradorDeRutas": HTTPS
-"ServidorReservas" --> "SistemaNotificacionProfesional"  : HTTPS
+"LoadBalancer" --> "Servidor1RueditasAmigas"
+"LoadBalancer" --> "Servidor2RueditasAmigas"
+"Servidor1RueditasAmigas" --> "BaseDeDatos"
+"Servidor2RueditasAmigas" --> "BaseDeDatos"
+"Servidor1RueditasAmigas" --> "SistemaNotificacionProfesional"
+"Servidor2RueditasAmigas" --> "SistemaNotificacionProfesional"
+"Servidor1RueditasAmigas" --> "SistemaGeneradorDeRutas"
+"Servidor2RueditasAmigas" --> "SistemaGeneradorDeRutas"
+"Cliente" --> "Internet"
+"Internet" --> "LoadBalancer"
 
 
 @enduml
