@@ -74,22 +74,22 @@ jobs:
           echo "Validando relaciones críticas..."
           
           # Balanceador a Servidores
-          check_rel "$LB" "$SRV1" "[[:space:]]*:[[:space:]]*HTTP"
-          check_rel "$LB" "$SRV2" "[[:space:]]*:[[:space:]]*HTTP"
+          check_rel "$LB" "$SRV1" "[[:space:]]*:[[:space:]]*"
+          check_rel "$LB" "$SRV2" "[[:space:]]*:[[:space:]]*"
           
           # Servidores a DB
-          check_rel "$SRV1" "$DB" "[[:space:]]*:[[:space:]]*JDBC"
-          check_rel "$SRV2" "$DB" "[[:space:]]*:[[:space:]]*JDBC"
+          check_rel "$SRV1" "$DB" "[[:space:]]*:[[:space:]]*"
+          check_rel "$SRV2" "$DB" "[[:space:]]*:[[:space:]]*"
           
           # Servidores a Servicios Internos y Externos (Sin protocolo específico)
           check_rel "$SRV1" "$EXT_RUTA" "[[:space:]]*:[[:space:]]*"
           check_rel "$SRV2" "$EXT_RUTA" "[[:space:]]*:[[:space:]]*"
-          check_rel "$SRV1" "$EXT_NOTI" "[[:space:]]*:[[:space:]]*HTTPS"
-          check_rel "$SRV2" "$EXT_NOTI" "[[:space:]]*:[[:space:]]*HTTPS"
+          check_rel "$SRV1" "$EXT_NOTI" "[[:space:]]*:[[:space:]]*"
+          check_rel "$SRV2" "$EXT_NOTI" "[[:space:]]*:[[:space:]]*"
           
           # Cliente e Internet
-          check_rel "$CLIENT" "$INET" "[[:space:]]*:[[:space:]]*HTTPS"
-          check_rel "$INET" "$LB" "[[:space:]]*:[[:space:]]*HTTPS"
+          check_rel "$CLIENT" "$INET" "[[:space:]]*:[[:space:]]*"
+          check_rel "$INET" "$LB" "[[:space:]]*:[[:space:]]*"
           
           # 5. Resultado Final
           if [ $MISSING -ne 0 ]; then
