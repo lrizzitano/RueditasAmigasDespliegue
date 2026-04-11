@@ -22,7 +22,7 @@ Proponé y diagramá una arquitectura que resuelva estas problemáticas usando P
 ---
 
 ## 🔗 Enlace al enunciado del modelo relacional
-* 📄 [Modelo de Datos Relacional]([https://docs.google.com/...](https://docs.google.com/document/d/1vDZ-ybIgk7lBvqI5vZ0lp2qpSolJnpKDtUftYn65XU8/edit?usp=sharing)
-* 📄 [Documentación de Diagramas de Despliegue en PLantUML](https://plantuml.com/es/deployment-diagram).
-* 📄 [Link Enunciado]([https://plantuml.com/es/deployment-diagram](https://docs.google.com/document/d/1ZwuV6ZYL8CbhLsqYLzW98h5nP8PAU0XXAEapIen8ls0/edit?usp=sharing)).
+* 📄 [Modelo de Datos Relacional](https://docs.google.com/document/d/1vDZ-ybIgk7lBvqI5vZ0lp2qpSolJnpKDtUftYn65XU8/edit?usp=sharing)
+* 📄 [Documentación de Diagramas de Despliegue en PlantUML](https://plantuml.com/es/deployment-diagram)
+* 📄 [Link Enunciado](https://docs.google.com/document/d/1ZwuV6ZYL8CbhLsqYLzW98h5nP8PAU0XXAEapIen8ls0/edit?usp=sharing)
 
