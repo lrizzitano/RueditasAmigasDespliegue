@@ -144,7 +144,6 @@ jobs:
                 break
               fi
             done
-            echo "for allowed"
 
             if [ "$authorized" = false ]; then
               echo "🚫 Relacion no permitida: $line"

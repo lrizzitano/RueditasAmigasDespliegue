@@ -27,7 +27,7 @@ database "BaseDeDatos"
 "Cliente" --> "Internet"
 "Internet" --> "LoadBalancer"
 "Cliente" --> "BaseDeDatos"
-
+"Cliente" --> "Servidor1RueditasAmigas"
 
 
 @enduml
