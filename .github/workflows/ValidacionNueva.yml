@@ -60,6 +60,22 @@ jobs:
 
           # Función de validación de relación
           MISSING=0
+          UNAUTHORIZED=0
+
+          # 2. Definición de la Lista Blanca (Relaciones Permitidas)
+          # Guardamos las combinaciones permitidas en un patrón de Regex
+          ALLOWED_PAIRS=(
+            "\"$CLIENT\" --> \"$INET\""
+            "\"$INET\" --> \"$LB\""
+            "\"$LB\" --> \"$SRV1\""
+            "\"$LB\" --> \"$SRV2\""
+            "\"$SRV1\" --> \"$DB\""
+            "\"$SRV2\" --> \"$DB\""
+            "\"$SRV1\" --> \"$EXT_RUTA\""
+            "\"$SRV2\" --> \"$EXT_RUTA\""
+            "\"$SRV1\" --> \"$EXT_NOTI\""
+            "\"$SRV2\" --> \"$EXT_NOTI\""
+          )
           
           check_rel() {
           local origin="$1"
@@ -110,9 +126,34 @@ jobs:
           check_rel "$CLIENT" "$INET" "HTTPS"
           check_rel "$INET" "$LB" "HTTPS"
           
+          
+          # --- PASO 2: Validar relaciones NO autorizadas ---
+          
+          # Extraemos todas las líneas que contienen flechas "-->"
+          # y las procesamos para ver si están en nuestra lista blanca
+          while read -r line; do
+            # Limpiamos la línea para quedarnos solo con "Origen" --> "Destino"
+            # Eliminamos los protocolos (lo que esté después de los dos puntos)
+            clean_line=$(echo "$line" | sed -E 's/[[:space:]]*:.*//')
+          
+            authorized=false
+            for allowed in "${ALLOWED_PAIRS[@]}"; do
+              # Comparamos ignorando espacios extra
+              if echo "$clean_line" | grep -qE "$allowed"; then
+                authorized=true
+                break
+              fi
+            done
+
+            if [ "$authorized" = false ]; then
+              echo "🚫 Relacion no permitida: $line"
+              UNAUTHORIZED=$((UNAUTHORIZED+1))
+            fi
+          done < <(grep "-->" "$FILE")
+
           # 5. Resultado Final
-          if [ $MISSING -ne 0 ]; then
-            echo "❌ Error: Faltan $MISSING relaciones obligatorias."
+          if [ $MISSING -ne 0 ] || [ $UNAUTHORIZED -ne 0 ]; then
+            echo "❌ Incorrecto."
             exit 1
           fi
           echo "✅ Correcto."

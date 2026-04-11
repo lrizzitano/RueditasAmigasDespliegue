@@ -26,6 +26,8 @@ database "BaseDeDatos"
 "Servidor2RueditasAmigas" --> "SistemaGeneradorDeRutas"
 "Cliente" --> "Internet"
 "Internet" --> "LoadBalancer"
+"Cliente" --> "BaseDeDatos"
+
 
 
 @enduml
