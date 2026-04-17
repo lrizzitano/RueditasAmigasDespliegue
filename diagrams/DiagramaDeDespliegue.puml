@@ -5,6 +5,7 @@ title Diagrama de Despliegue Rueditas Amigas
 
 node "SistemaGeneradorDeRutas"
 actor "Cliente"
+actor "Forever Alone"
 cloud "Internet"
 node "SistemaNotificacionProfesional"
 
