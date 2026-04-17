@@ -206,7 +206,7 @@ else:
 # 4. Resultado final
 # ----------------------------
 if errors > 0:
-    print("❌ Incorrecto")
+    print(f"📝 Correcciones pendientes: {errors}")
     sys.exit(1)
 
-print("✅ Correcto")
+print("✅ ✨Ejercicio correcto✨")
