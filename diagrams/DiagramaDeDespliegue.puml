@@ -24,7 +24,8 @@ database "BaseDeDatos"
 "Servidor2RueditasAmigas" --> "SistemaNotificacionProfesional"
 "Servidor1RueditasAmigas" --> "SistemaGeneradorDeRutas"
 "Servidor2RueditasAmigas" --> "SistemaGeneradorDeRutas"
-"Cliente" --> "Internet"
+"Cliente" --> "LoadBalancer"
+"Cliente" --> "BaseDeDatos"
 "Internet" --> "LoadBalancer"
 
 
