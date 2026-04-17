@@ -16,18 +16,16 @@ node "Servidor2RueditasAmigas"
 database "BaseDeDatos"
 }
 
-"LoadBalancer" --> "Servidor1RueditasAmigas" : "JDBC"
+"LoadBalancer" --> "Servidor1RueditasAmigas"
 "LoadBalancer" --> "Servidor2RueditasAmigas"
 "Servidor1RueditasAmigas" --> "BaseDeDatos"
-"Servidor2RueditasAmigas" --> "BaseDeDatos" : "HTTP"
+"Servidor2RueditasAmigas" --> "BaseDeDatos"
 "Servidor1RueditasAmigas" --> "SistemaNotificacionProfesional"
 "Servidor2RueditasAmigas" --> "SistemaNotificacionProfesional"
 "Servidor1RueditasAmigas" --> "SistemaGeneradorDeRutas"
 "Servidor2RueditasAmigas" --> "SistemaGeneradorDeRutas"
 "Cliente" --> "Internet"
 "Internet" --> "LoadBalancer"
-"Cliente" --> "BaseDeDatos"
-"Cliente" --> "Servidor1RueditasAmigas"
 
 
 @enduml
