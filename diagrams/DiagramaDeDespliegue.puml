@@ -5,7 +5,6 @@ title Diagrama de Despliegue Rueditas Amigas
 
 node "SistemaGeneradorDeRutas"
 actor "Cliente"
-actor "Forever Alone"
 cloud "Internet"
 node "SistemaNotificacionProfesional"
 
@@ -17,12 +16,13 @@ node "Servidor2RueditasAmigas"
 database "BaseDeDatos"
 }
 
-"LoadBalancer" --> "Servidor1RueditasAmigas"
-"LoadBalancer" --> "Servidor2RueditasAmigas"
-"Servidor1RueditasAmigas" --> "BaseDeDatos"
-"Servidor2RueditasAmigas" --> "BaseDeDatos"
-"Servidor1RueditasAmigas" --> "SistemaNotificacionProfesional"
+"LoadBalancer" -> "Servidor1RueditasAmigas"
+"Servidor2RueditasAmigas" <-- "LoadBalancer"
+"Servidor1RueditasAmigas" -r-> "BaseDeDatos"
+"Servidor2RueditasAmigas" -----> "BaseDeDatos"
+"Servidor1RueditasAmigas" -[bold]-> "SistemaNotificacionProfesional"
 "Servidor2RueditasAmigas" --> "SistemaNotificacionProfesional"
+"Servidor1RueditasAmigas" --> "SistemaGeneradorDeRutas"
 "Servidor2RueditasAmigas" --> "SistemaGeneradorDeRutas"
 "Cliente" --> "Internet"
 "Internet" --> "LoadBalancer"
