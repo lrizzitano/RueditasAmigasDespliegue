@@ -4,7 +4,7 @@
 title Diagrama de Despliegue Rueditas Amigas
 
 node "SistemaGeneradorDeRutas"
-actor "Clientems"
+actor "Cliente"
 cloud "Internet"
 node "SistemaNotificacionProfesional"
 
@@ -24,7 +24,7 @@ database "BaseDeDatos"
 "Servidor2RueditasAmigas" --> "SistemaNotificacionProfesional"
 "Servidor1RueditasAmigas" --> "SistemaGeneradorDeRutas"
 "Servidor2RueditasAmigas" --> "SistemaGeneradorDeRutas"
-"Clientems" --> "Internet"
+"Cliente" --> "Internet"
 "Internet" --> "LoadBalancer"
 
 
