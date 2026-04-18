@@ -34,7 +34,7 @@ def matchea_nombre (prefixes, keywords, text):
     pattern = rf'node\s+"([^"]+)"(?=.*{search_pattern})'
 
     match = re.search(pattern, text, re.IGNORECASE)
-    return re.fullmatch(full_pattern, name_to_check, re.IGNORECASE) is not None
+    return match is not None
 
 # ----------------------------
 # 2. Parseo
