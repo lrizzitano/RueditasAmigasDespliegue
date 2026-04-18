@@ -1,27 +1,77 @@
 @startuml DiagramaDeDespliegue
-'https://plantuml.com/deployment-diagram
+title Arquitectura - Sistema Rueditas Amigas
 
-title Diagrama de Despliegue Rueditas Amigas
+' Actores
+actor "Solicitante" as Solicitante
+actor "Administrador" as Admin
 
+' Dispositivos cliente
+node "Dispositivo Cliente\n(Desktop / Mobile)" {
+    component "Browser / App Cliente" as ClienteApp
+}
 
-actor "Admin"
-actor "Usuario"
+Solicitante --> ClienteApp
+Admin --> ClienteApp
 
-actor "Jorge"
+' Internet
+cloud "Internet" {
+}
 
+ClienteApp --> Internet
 
-cloud "Internet"
+' Nodo Frontend (puede ser CDN o server web)
+node "Frontend Server\n(Static Content / CDN)" {
+    component "SPA (React / Angular / Vue)" as SPA
+    component "Assets Estáticos\n(HTML, CSS, JS)" as Static
+}
 
-node "Servidor"
+Internet --> SPA
+SPA --> Static
 
-database "Base de datos"
+' Nodo Backend (API)
+node "Backend Server\n(API REST)" {
 
-"Usuario" --> "Internet"
-"Admin" --> "Internet"
+    component "API Gateway / Router" as APIGW
+    
+    component "Módulo de Autenticación" as Auth
+    component "Módulo de Gestión de Usuarios" as Users
+    component "Módulo de Solicitudes de Traslado" as Trips
+    component "Módulo de Estadísticas" as Stats
+    
+    component "Servicio de Negocio\n(Lógica de Aplicación)" as Business
+    
+}
 
-"Jorge" --> "Internet"
+SPA --> APIGW
 
-"Internet" -l-> "Servidor"
+APIGW --> Auth
+APIGW --> Users
+APIGW --> Trips
+APIGW --> Stats
 
-"Servidor" -[bold]-> "Base de datos"
+Auth --> Business
+Users --> Business
+Trips --> Business
+Stats --> Business
+
+' Base de datos
+node "DB Server" {
+    database "Base de Datos Relacional\n(PostgreSQL / MySQL)" as DB
+}
+
+Business --> DB
+
+' Notas adicionales
+note right of SPA
+Acceso 24/7 desde cualquier dispositivo
+Interfaz para solicitantes y administradores
+end note
+
+note right of Stats
+Consultas analíticas para administradores
+end note
+
+note bottom of DB
+Persistencia basada en el modelo relacional definido previamente
+end note
 @enduml
