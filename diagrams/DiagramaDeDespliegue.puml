@@ -1,4 +1,4 @@
-@startuml Diagrama de Despliegue Rueditas Amigas
+@startuml DiagramaDeDespliegue
 'https://plantuml.com/deployment-diagram
 
 title Diagrama de Despliegue Rueditas Amigas

@@ -117,47 +117,67 @@ def ok(msg):
     print(f"✅ {msg}")
 
 # ----------------------------
-# Al menos 1 actor, todos conectados a través de internet
+# Hay entre 2 y 4 actores
 # ----------------------------
+actor_extranio = False
+cant_solicitantes = 0
+cant_admins = 0
 
-actores_desconectados = any(
-    not any(
-        tipo_componente(r["hasta"]) == "cloud"
-        for r in relaciones
-        if r["desde"] == a
-    )
-    for a in actores
-)
-
-if not actores:
-    fail("Debe haber al menos un actor")
-elif actores_desconectados:
-    fail("Todos los actores deben estar conectados a través de internet (ver elementos cloud)")
-else:
-    for a in actores:
+for a in actores:
         es_solicitante = matchea_nombre(["user", "usua"], ["Persona Usuaria", "Persona Solicitante", "Solicitante"], a)
         es_admin = matchea_nombre(["admin"], ["Administrador", "Persona Administradora"], a)
 
         if es_solicitante:
             print(f"✅ Solicitante encontrado: {a}")
+            cant_solicitantes += 1
         elif es_admin:
             print(f"✅ Administrador encontrado: {a}")
+            cant_admins += 1
         else:
-           fail("Se encontro un actor que no corresponde a un solicitante ni a un administrador.")
+            actor_extranio = True
+           
 
-    ok("Actor/es OK")
+if len(actores) < 2:
+    fail("Debe haber al menos dos actores")
+elif len(actores) > 4:
+    fail("Hay demasiados actores")
+elif cant_solicitantes < 1:
+    fail("Debe haber al menos un actor que represente a les solicitantes")
+elif cant_admins < 1:
+    fail("Debe haber al menos un actor que represente a les administradores")
+elif actor_extranio:
+    fail("Se encontraron actores que no corresponden a solicitantes ni administradores.")
+else:
+    ok("Actores OK")
+
+# ----------------------------
+# Si hay componente cloud && solo 1 nodo => los actores deben estar conectados
+# ----------------------------
+actores_desconectados = False
+
+if clouds and len(nodos) == 1:
+    actores_desconectados = any(
+        not any(
+            tipo_componente(r["hasta"]) == "cloud"
+            for r in relaciones
+            if r["desde"] == a
+        )
+        for a in actores
+    )
+
+if actores_desconectados:
+    fail("Todos los actores deben estar conectados a través de internet (ver elementos cloud)")
+else:
+    ok("Conexion de actores OK")
 
 # ----------------------------
 # Al menos una database, sin actores conectados
 # ----------------------------
 
 actores_a_dbs = any(
-    any(
-        tipo_componente(r["hasta"]) == "database"
-        for r in relaciones
-        if r["desde"] == a
-    )
-    for a in actores
+    (tipo_componente(r["desde"]) == "actor" and tipo_componente(r["hasta"]) == "database") or
+    (tipo_componente(r["desde"]) == "database" and tipo_componente(r["hasta"]) == "actor")
+    for r in relaciones
 )
 
 if not databases:
@@ -168,10 +188,21 @@ else:
     ok("Base/s de datos OK")
 
 # ----------------------------
+# Hay entre 1 y 3 nodos
+# ----------------------------
+
+if not nodos:
+    fail("Debe haber al menos un nodo")
+elif len(nodos) > 3:
+    fail("Hay demasiados nodos")
+else:
+    ok("Nodo/s OK")
+
+# ----------------------------
 # 4. Resultado final
 # ----------------------------
 if errors > 0:
     print(f"📝 Correcciones pendientes: {errors}")
     sys.exit(1)
 
-print("✅ ✨Ejercicio correcto✨")
+print("✅ ✨TPI2 aprobado✨")
