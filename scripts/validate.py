@@ -16,10 +16,12 @@ lines = file_path.read_text().splitlines()
 # ----------------------------
 # Matcheo por nombres
 # ----------------------------
-def get_node_by_keywords(prefix, keywords, text):
+def get_node_by_keywords(prefixes, keywords, text):
     # Creamos el grupo de keywords: (Administrador|Persona Administradora|...) permitiendo espacios en el medio
     def make_flexible(word):
         return r"\s*".join(list(word))
+
+    flexible_prefixes = "|".join([make_flexible(p) for p in prefixes])
 
     flexible_keywords = [make_flexible(k) for k in keywords]
     keyword_group = "|".join(flexible_keywords)
@@ -34,8 +36,8 @@ def get_node_by_keywords(prefix, keywords, text):
     return match.group(1) if match else fail("El valor {text} no es un nombre valido para esta variable.")
 
 
-SOLICITANTE = get_node_by_keywords("user", ["Usuario", "User", "Solicitante"], content)
-ADMINISTRADOR = get_node_by_keywords("admin", ["Administrador", "Persona Administradora", content)
+SOLICITANTE = get_node_by_keywords(["user", "usua"], ["Usuario", "User", "Solicitante"], content)
+ADMINISTRADOR = get_node_by_keywords("admin", ["Administrador", "Persona Administradora"], content)
 
 
 print(f"🔍 Analizando nombres")
