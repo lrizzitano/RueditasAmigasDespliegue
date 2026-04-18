@@ -4,7 +4,7 @@
 title Diagrama de Despliegue Rueditas Amigas
 
 
-actor "Admin"
+ctor "Admin"
 actor "Usuario"
 
 cloud "Internet"

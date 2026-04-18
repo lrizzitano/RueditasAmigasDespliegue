@@ -24,20 +24,22 @@ jobs:
         with:
           python-version: "3.x"
 
-      - name: Run validator
-        run: python3 scripts/validate.py
-
       - name: Install Graphviz
         run: |
           sudo apt-get update
           sudo apt-get install -y graphviz
 
-      - name: Generate PlantUML Diagrams
+      - name: Validación de sintaxis y generación del diagrama
         run: |
           wget -O plantuml.jar "https://github.com/plantuml/plantuml/releases/download/v1.2024.3/plantuml-1.2024.3.jar"
           java -jar plantuml.jar diagrams/*.puml -o ../output/
           
           rm plantuml.jar
+
+          echo "✅ Sintaxis PlantUML válida"
+
+      - name: Validación de estructura y nombres
+        run: python3 scripts/validate.py
 
       - name: Commit & Push Changes
         run: |
