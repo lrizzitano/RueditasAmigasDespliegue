@@ -8,9 +8,9 @@ A partir de este modelo, tenemos que definir una primera versión del sistema qu
 
 ### 📋✏️ Requerimientos
 
-* Las personas solicitantes de traslados deben poder ingresar al sistema desde cualquier dispositivo (computadora de escritorio, teléfono celular, etc).a través de internet
-* Las personas solicitantes podrán ingresar al sistema en cualquier momento del día y realizar su solicitud.
-* Las personas administradoras del sistema también podrán ingresar al mismo en cualquier horario del día y a través de cualquier dispositivo conectado a internet para consultar estadísticas. 
+* Las personas **solicitantes** de traslados deben poder ingresar al sistema desde cualquier dispositivo (computadora de escritorio, teléfono celular, etc).a través de internet.
+* Las personas **solicitantes** podrán ingresar al sistema en cualquier momento del día y realizar su solicitud.
+* Las personas **administradoras** del sistema también podrán ingresar al mismo en cualquier horario del día y a través de cualquier dispositivo conectado a internet para consultar estadísticas. 
 
 Proponé y diagramá una arquitectura que resuelva estas problemáticas usando PlantUML.
 
