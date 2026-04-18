@@ -3,8 +3,8 @@
 
 title Diagrama de Despliegue Rueditas Amigas
 
-actor "Admin"
-actor "Usuario"
+actor "adminLocuraTotal"
+actor "UsuarAdrian"
 
 cloud "Internet"
 
