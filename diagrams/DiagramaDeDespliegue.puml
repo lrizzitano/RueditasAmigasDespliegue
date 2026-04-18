@@ -8,8 +8,7 @@ actor "Admin"
 actor "Usuario"
 actor "Administradora"
 actor "Usuarioms"
-actor "Administradore"
-actor "Usuaria"
+
 
 cloud "Internet"
 
@@ -20,9 +19,8 @@ database "Base de datos"
 "Usuario" --> "Internet"
 "Admin" --> "Internet"
 "Usuarioms" --> "Internet"
-"Administradora" --> "Internet"
-"Usuaria" --> "Internet"
-"Administradore" --> "Internet"
+"Administradora" --> "Servidor"
+
 
 "Internet" -l-> "Servidor"
 
