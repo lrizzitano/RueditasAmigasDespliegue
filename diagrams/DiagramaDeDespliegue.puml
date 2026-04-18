@@ -14,8 +14,12 @@ node "balanceador"
 
 database "Base de datos"
 
-"UsuarAdrian" --> "Internet"
+"solicitante" --> "Internet"
+"USUACCCC" --> "Internet"
+"USERRRRR" --> "Internet"
 "LocuraTotal" --> "Internet"
+"admin1" --> "Internet"
+"ADMINDEPRUEBA" --> "Internet"
 
 "Internet" -l-> "balanceador"
 
