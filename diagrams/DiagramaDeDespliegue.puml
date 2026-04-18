@@ -19,4 +19,9 @@ database "Base de datos"
 
 "Servidor" -[bold]-> "Base de datos"
 
+//probando
+node "LoadBalancer"
+"Internet" -l-> "LoadBalancer"
+"LoadBalancer" --> "Servidor"
+
 @enduml
