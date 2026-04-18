@@ -32,6 +32,7 @@ jobs:
       - name: Validación de sintaxis y generación del diagrama
         run: |
           wget -O plantuml.jar "https://github.com/plantuml/plantuml/releases/download/v1.2024.3/plantuml-1.2024.3.jar"
+          mkdir -p output
           java -jar plantuml.jar diagrams/*.puml -o ../output/
           
           rm plantuml.jar
