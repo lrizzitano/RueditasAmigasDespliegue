@@ -27,5 +27,5 @@ A partir de este modelo, tenemos que definir una primera versión del sistema qu
 ## 🔗 Enlaces
 * 📄 [Modelo de Datos Relacional](https://docs.google.com/document/d/1vDZ-ybIgk7lBvqI5vZ0lp2qpSolJnpKDtUftYn65XU8/edit?usp=sharing)
 * 📄 [Documentación de Diagramas de Despliegue en PlantUML](https://plantuml.com/es/deployment-diagram)
-* 📄 [Link Enunciado](https://docs.google.com/document/d/1ZwuV6ZYL8CbhLsqYLzW98h5nP8PAU0XXAEapIen8ls0/edit?usp=sharing)
+* 📄 [Link Enunciado](https://docs.google.com/document/d/13znCErQxKCfgXqUbEf6sdK3ThnOqYVKeDoQRm6U8J6g/edit?tab=t.0)
 
