@@ -7,16 +7,16 @@ title Diagrama de Despliegue Rueditas Amigas
 actor "Admin"
 actor "Usuario"
 
-cloud "Internet"
+cloud "Internech"
 
 node "Servidor"
 
 database "Base de datos"
 
-"Usuario" --> "Internet"
-"Admin" --> "Internet"
+"Usuario" --> "Internech"
+"Admin" --> "Internech"
 
-"Internet" -l-> "Servidor"
+"Internech" -l-> "Servidor"
 
 "Servidor" -[bold]-> "Base de datos"
 @enduml
