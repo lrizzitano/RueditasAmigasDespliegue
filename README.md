@@ -8,8 +8,9 @@ A partir de este modelo, se implementó una primera versión del sistema, la cua
 
 ### ⚠️ Problemáticas Actuales
 
-* Cuando se registra un alto volumen de personas realizando solicitudes de reserva de manera simultánea, el sistema experimenta una degradación significativa en su rendimiento. Las pantallas demoran en cargar o directamente dejan de responder, generando tiempos de espera elevados y una experiencia negativa para el usuario.
-* En este contexto, el equipo de Rueditas Amigas nos comenta que además de requerir una solución que mejore el rendimiento, es necesario que el sistema también sea tolerante a fallos para evitar caídas del sistema y garantizar la continuidad del servicio.
+* Las personas solicitantes de traslados deben poder ingresar al sistema desde cualquier dispositivo (computadora de escritorio, teléfono celular, etc).a través de internet
+* Las personas solicitantes podrán ingresar al sistema en cualquier momento del día y realizar su solicitud.
+* Las personas administradoras del sistema también podrán ingresar al mismo en cualquier horario del día y a través de cualquier dispositivo conectado a internet para consultar estadísticas. 
 
 Proponé y diagramá una arquitectura que resuelva estas problemáticas usando PlantUML.
 
@@ -17,7 +18,7 @@ Proponé y diagramá una arquitectura que resuelva estas problemáticas usando P
 
 ### 🖼️ Validación del Diagrama de Despliegue
 > [!IMPORTANT]
-> En caso de que las validaciones sean correctas, el diagrama se generará automáticamente mediante GitHub Actions en la carpeta `diagrams/`.
+> En caso de el ejercicio este correcto, el diagrama se generará automáticamente mediante GitHub Actions en la carpeta `diagrams/`.
 
 ---
 
