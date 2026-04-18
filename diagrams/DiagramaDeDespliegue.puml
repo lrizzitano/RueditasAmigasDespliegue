@@ -9,18 +9,17 @@ actor "Usuario"
 cloud "Internet"
 
 node "Servidor"
+node "balanceador"
 
 database "Base de datos"
 
 "Usuario" --> "Internet"
 "Admin" --> "Internet"
 
-"Internet" -l-> "Servidor"
+"Internet" -l-> "balanceador"
 
 "Servidor" -[bold]-> "Base de datos"
 
-node "balanceador"
-"Internet" -l-> "LoadBalancer"
-"LoadBalancer" --> "Servidor"
+"balanceador" --> "Servidor"
 
 @enduml

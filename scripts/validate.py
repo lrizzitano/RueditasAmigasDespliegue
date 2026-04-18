@@ -39,7 +39,6 @@ def get_node_by_keywords(prefixes, keywords, text):
 SOLICITANTE = get_node_by_keywords(["user", "usua"], ["Usuario", "User", "Solicitante"], content)
 ADMINISTRADOR = get_node_by_keywords("admin", ["Administrador", "Persona Administradora"], content)
 
-
 print(f"🔍 Analizando nombres")
 print(f"  Solicitante: {SOLICITANTE}")
 print(f"  Administrador:   {ADMINISTRADOR}")
@@ -174,6 +173,8 @@ if not actores:
 elif actores_desconectados:
     fail("Todos los actores deben estar conectados a través de internet (ver elementos cloud)")
 else:
+    for a in actores:
+        print(f"  - Actor: {a}")
     ok("Actor/es OK")
 
 # ----------------------------
