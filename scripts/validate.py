@@ -118,6 +118,7 @@ for c, t in componentes.items():
 
     if len(internet_entrante) >= 1 and len(nodos_salientes) >= 2:
         componentes[c] = "balanceador"
+        print(f"Detecta balanceador") #no me lo esta tomando
         balanceadores.add(c)
 
         # Marco los nodos balanceados como servidores
@@ -173,7 +174,7 @@ else:
         elif es_admin:
             print(f"✅ Administrador encontrado: {a}")
         else:
-            print(f"No matchea: {a}")
+           fail("{a} no es un nombre valido para esta variable.")
 
     ok("Actor/es OK")
 

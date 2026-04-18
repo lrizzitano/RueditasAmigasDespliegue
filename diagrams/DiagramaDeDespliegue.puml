@@ -3,7 +3,7 @@
 
 title Diagrama de Despliegue Rueditas Amigas
 
-actor "adminLocuraTotal"
+actor "LocuraTotal"
 actor "UsuarAdrian"
 
 cloud "Internet"
@@ -14,7 +14,7 @@ node "balanceador"
 database "Base de datos"
 
 "UsuarAdrian" --> "Internet"
-"adminLocuraTotal" --> "Internet"
+"LocuraTotal" --> "Internet"
 
 "Internet" -l-> "balanceador"
 
