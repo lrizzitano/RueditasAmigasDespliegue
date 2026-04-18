@@ -20,16 +20,14 @@ lines = file_path.read_text().splitlines()
 def matchea_nombre (prefixes, keywords, text):
     # Creamos el grupo de keywords: (Administrador|Persona Administradora|...) permitiendo espacios en el medio
     def make_flexible(word):
-        return r"\\s*".join(list(word))
-
-    flexible_prefixes = "|".join([make_flexible(p) for p in prefixes])
+        return r"\s*".join(list(word))
 
     flexible_keywords = [make_flexible(k) for k in keywords]
     keyword_group = "|".join(flexible_keywords)
 
     # El regex busca: (Comienza con admin seguido de lo que sea) O (Cualquier keyword de la lista)
     # Expresión: (admin.*|Administrador|Persona Administradora)
-    search_pattern = rf"({flexible_prefixes}.*|{keyword_group})"
+    search_pattern = rf"({prefixes}.*|{keyword_group})"
 
     print(f"Pattern: {search_pattern}")
 
