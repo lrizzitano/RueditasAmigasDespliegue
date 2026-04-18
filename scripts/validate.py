@@ -44,7 +44,7 @@ ADMINISTRADOR = get_node_by_keywords("admin", ["Administrador", "Persona Adminis
 print(f"🔍 Analizando nombres")
 print(f"  Solicitante: {SOLICITANTE}")
 print(f"  Administrador:   {ADMINISTRADOR}")
-""""
+"""
 
 # ----------------------------
 # 2. Parseo
