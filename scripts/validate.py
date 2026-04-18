@@ -31,9 +31,9 @@ def matchea_nombre (prefixes, keywords, text):
     # Expresión: (admin.*|Administrador|Persona Administradora)
     search_pattern = rf"({flexible_prefixes}.*|{keyword_group})"
 
-    pattern = rf'node\s+"([^"]+)"(?=.*{search_pattern})'
+    print(f"Pattern: {search_pattern}")
 
-    match = re.search(pattern, text, re.IGNORECASE)
+    match = re.search(search_pattern, text, re.IGNORECASE)
     return match is not None
 
 # ----------------------------
@@ -168,7 +168,10 @@ elif actores_desconectados:
 else:
     for a in actores:
         es_solicitante = matchea_nombre(["user", "usua"], ["Usuario", "User", "Solicitante"], a)
-        es_admin = matchea_nombre("admin", ["Administrador", "Persona Administradora"], a)
+        es_admin = matchea_nombre(["admin"], ["Administrador", "Persona Administradora"], a)
+
+        print(f"✅ Solicitante encontrado: {es_solicitante}")
+        print(f"✅ Solicitante encontrado: {es_admin}")
 
         if es_solicitante:
             print(f"✅ Solicitante encontrado: {a}")
