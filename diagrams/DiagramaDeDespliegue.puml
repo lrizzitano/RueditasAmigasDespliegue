@@ -9,6 +9,7 @@ actor "UsuarAdrian"
 cloud "Internet"
 
 node "Servidor"
+node "Servidor2"
 node "balanceador"
 
 database "Base de datos"
@@ -19,7 +20,9 @@ database "Base de datos"
 "Internet" -l-> "balanceador"
 
 "Servidor" -[bold]-> "Base de datos"
+"Servidor2" -[bold]-> "Base de datos"
 
 "balanceador" --> "Servidor"
+"balanceador" --> "Servidor2"
 
 @enduml

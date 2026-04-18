@@ -32,8 +32,6 @@ def matchea_nombre (prefixes, keywords, text):
     # Expresión: (admin.*|Administrador|Persona Administradora)
     search_pattern = rf"({prefixes_group}.*|{keyword_group})"
 
-    print(f"Pattern: {search_pattern}")
-
     match = re.search(search_pattern, text, re.IGNORECASE)
     return match is not None
 
@@ -121,7 +119,6 @@ for c, t in componentes.items():
 
     if len(internet_entrante) >= 1 and len(nodos_salientes) >= 2:
         componentes[c] = "balanceador"
-        print(f"Detecta balanceador") #no me lo esta tomando
         balanceadores.add(c)
 
         # Marco los nodos balanceados como servidores
@@ -177,7 +174,7 @@ else:
         elif es_admin:
             print(f"✅ Administrador encontrado: {a}")
         else:
-           fail("{a} no es un nombre valido para esta variable.")
+           fail("Se encontro un actor que no corresponde a un solicitante ni a un administrador.")
 
     ok("Actor/es OK")
 
