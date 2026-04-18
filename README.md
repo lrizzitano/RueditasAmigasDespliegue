@@ -18,7 +18,7 @@ Proponé y diagramá una arquitectura que resuelva estas problemáticas usando P
 
 ### 📍 Validación del Diagrama de Despliegue
 > [!IMPORTANT]
-> En caso de el ejercicio este correcto, el diagrama se generará automáticamente mediante GitHub Actions en la carpeta `diagrams/`.
+> En caso de el ejercicio este correcto, el diagrama se generará automáticamente mediante GitHub Actions en la carpeta `output/`.
 
 ---
 
