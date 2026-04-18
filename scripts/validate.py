@@ -167,8 +167,8 @@ elif actores_desconectados:
     fail("Todos los actores deben estar conectados a través de internet (ver elementos cloud)")
 else:
     for a in actores:
-        es_solicitante = is_node_match(["user", "usua"], ["Usuario", "User", "Solicitante"], a)
-        es_admin = is_node_match("admin", ["Administrador", "Persona Administradora"], a)
+        es_solicitante = matchea_nombre(["user", "usua"], ["Usuario", "User", "Solicitante"], a)
+        es_admin = matchea_nombre("admin", ["Administrador", "Persona Administradora"], a)
 
         if es_solicitante:
             print(f"✅ Solicitante encontrado: {a}")
