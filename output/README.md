@@ -4,140 +4,15 @@
 name: Plant UML Diagram Generator
 
 permissions:
-contents: write
+  contents: write
 
 on:
-push:
-branches:
-- main
+  push:
+    branches:
+      - main
 
 jobs:
-ValidateDiagram:
-
-    runs-on: ubuntu-latest
-    #    Check to make sure the commit doesn't contain "ci-skip"
-    if: "!contains(github.event.head_commit.message, 'ci-skip')"
-    
-    steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v2
-
-      - name: Validate Diagram Relations
-        run: |
-
-          # 1. Encontrar el archivo
-          FILE=$(find diagrams/ -maxdepth 1 -name "*.puml" | head -1)
-          if [ -z "$FILE" ]; then echo "❌ No .puml file found"; exit 1; fi
-
-          echo "🔍 Analizando componentes en: $FILE"
-
-          # Función para extraer el nombre exacto de un nodo basado en una palabra clave
-               get_node_name() {
-               local keyword=$1
-          
-          # Busca una línea que empiece con node, busque la palabra clave y extraiga lo que hay entre comillas
-               grep -i "node" "$FILE" | grep -i "$keyword" | grep -oP '(?<=")[^"]+(?=")' | head -1
-               }
-
-          # 2. Asignación estricta por nombre
-               LB=$(get_node_name "LoadBalancer")
-               DB=$(get_node_name "DatabBase")
-               SRV1=$(get_node_name "Servidor1")
-               SRV2=$(get_node_name "Servidor2")
-               GEO=$(get_node_name "Geolocalizacion")
-               RES=$(get_node_name "Reservas")
-               EXT_NOTI=$(get_node_name "Notificacion")
-               EXT_RUTA=$(get_node_name "Ruta")
-          
-          DB=$(grep -oP 'database\s+"\K[^"]+' "$FILE" | head -1)
-          CLIENT=$(grep -oP 'actor\s+"\K[^"]+' "$FILE" | head -1)
-          INET=$(grep -oP 'cloud\s+"\K[^"]+' "$FILE" | head -1)
-          
-          echo "Variables detectadas:"
-          echo "  LoadBalancer: $LB"
-          echo "  Servidor 1: $SRV1"
-          echo "  Servidor 2: $SRV2"
-          echo "  DB: $DB"
-          echo "  Cliente: $CLIENT"
-          echo "  Internet: $INET"
-
-          # 3. Función de validación de relación exacta
-          MISSING=0
-          check_rel() {
-            local pattern="\"$1\"[[:space:]]*-->[[:space:]]*\"$2\"$3"
-            if grep -qE "$pattern" "$FILE"; then
-              echo "✅ OK: $1 -> $2"
-            else
-              echo "❌ MISSING: $1 -> $2"
-              MISSING=$((MISSING+1))
-            fi
-          }
-
-          # 4. LAS 12 VERIFICACIONES OBLIGATORIAS
-          echo "Validando relaciones críticas..."
-          
-          # Balanceador a Servidores
-          check_rel "$LB" "$SRV1" "[[:space:]]*:[[:space:]]*HTTP"
-          check_rel "$LB" "$SRV2" "[[:space:]]*:[[:space:]]*HTTP"
-          
-          # Servidores a DB
-          check_rel "$SRV1" "$DB" "[[:space:]]*:[[:space:]]*JDBC"
-          check_rel "$SRV2" "$DB" "[[:space:]]*:[[:space:]]*JDBC"
-          
-          # Servidores a Servicios Internos (Sin protocolo específico)
-          check_rel "$SRV1" "$GEO" ""
-          check_rel "$SRV2" "$GEO" ""
-          check_rel "$SRV1" "$RES" ""
-          check_rel "$SRV2" "$RES" ""
-          
-          # Cliente e Internet
-          check_rel "$CLIENT" "$INET" "[[:space:]]*:[[:space:]]*HTTPS"
-          check_rel "$INET" "$LB" "[[:space:]]*:[[:space:]]*HTTPS"
-          
-          # Salida a Sistemas Externos
-          check_rel "$GEO" "$EXT_RUTA" "[[:space:]]*:[[:space:]]*HTTPS"
-          check_rel "$RES" "$EXT_NOTI" "[[:space:]]*:[[:space:]]*HTTPS"
-          
-          # 5. Resultado Final
-          if [ $MISSING -ne 0 ]; then
-            echo "❌ Error: Faltan $MISSING relaciones obligatorias."
-            exit 1
-          fi
-          echo "🎉 Todas las relaciones validadas correctamente con nombres dinámicos."
-
-      - name: Generate PlantUML Diagrams
-        uses: Timmy/plantuml-action@v1
-        with:
-          # These arguments go directly to the `plantuml` command. Output directory is relative to input. Reference: https://plantuml.com/command-line
-          args: 'diagrams/*.puml -o ../output/'
-
-      - name: Commit & Push Changes
-        run: |
-          # Before attempting to commit changes, make sure something has changed
-          if [[ `git status --porcelain` ]]; then
-              git config --local user.email "action@github.com"
-              git config --local user.name "GitHub Action"
-              git add output/
-              git commit -am "DiagramaGeneradoCorrectamente"
-              git push
-          fi
-
-------------------
-# This is a GitHub Workflow configuration
-# Sytnax reference: https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions
-
-name: Plant UML Diagram Generator
-
-permissions:
-contents: write
-
-on:
-push:
-branches:
-- main
-
-jobs:
-ValidateDiagram:
+  ValidateDiagram:
 
     runs-on: ubuntu-latest
     #    Check to make sure the commit doesn't contain "ci-skip"
@@ -166,7 +41,7 @@ ValidateDiagram:
 
           # Asignación por nombre
            LB=$(get_node_name "LoadBalancer")
-           DB=$(get_node_name "DatabBase")
+           DB=$(get_node_name "DataBase")
            SRV1=$(get_node_name "Servidor1")
            SRV2=$(get_node_name "Servidor2")
            EXT_NOTI=$(get_node_name "Notificacion")
@@ -185,43 +60,103 @@ ValidateDiagram:
 
           # Función de validación de relación
           MISSING=0
+          UNAUTHORIZED=0
+
+          # 2. Definición de la Lista Blanca (Relaciones Permitidas)
+          # Guardamos las combinaciones permitidas en un patrón de Regex
+          ALLOWED_PAIRS=(
+            "\"$CLIENT\" --> \"$INET\""
+            "\"$INET\" --> \"$LB\""
+            "\"$LB\" --> \"$SRV1\""
+            "\"$LB\" --> \"$SRV2\""
+            "\"$SRV1\" --> \"$DB\""
+            "\"$SRV2\" --> \"$DB\""
+            "\"$SRV1\" --> \"$EXT_RUTA\""
+            "\"$SRV2\" --> \"$EXT_RUTA\""
+            "\"$SRV1\" --> \"$EXT_NOTI\""
+            "\"$SRV2\" --> \"$EXT_NOTI\""
+          )
+          
           check_rel() {
-            local pattern="\"$1\"[[:space:]]*-->[[:space:]]*\"$2\"$3"
-            if grep -qE "$pattern" "$FILE"; then
-              echo "✅ OK: $1 -> $2"
-            else
-              echo "❌ MISSING: $1 -> $2"
-              MISSING=$((MISSING+1))
-            fi
+          local origin="$1"
+          local target="$2"
+          local expected_proto="$3" # Protocolo permitido (opcional)
+          
+          # 1. Verificar si la relación base existe (ignorando el protocolo por ahora)
+          local base_pattern="\"$origin\"[[:space:]]*-->[[:space:]]*\"$target\""
+          
+          if ! grep -qE "$base_pattern" "$FILE"; then
+          echo "❌ ERROR: Falta la relación: $origin -> $target"
+          MISSING=$((MISSING+1))
+          return
+          fi
+          
+          # 2. Si existe la relación, validar el protocolo
+          # Construimos un patrón que acepta: Solo la relación O la relación + protocolo esperado
+          local proto_pattern="^${base_pattern}([[:space:]]*:[[:space:]]*$expected_proto)?[[:space:]]*$"
+          
+          if grep -qE "$proto_pattern" "$FILE"; then
+          echo "✅ OK: $origin -> $target"
+          else
+          # Si entró aquí, es porque la relación existe pero tiene un protocolo que no coincide
+          local current_line=$(grep -E "$base_pattern" "$FILE")
+          echo "❌ ERROR PROTOCOLO: $origin -> $target tiene un protocolo inválido. Se esperaba '$expected_proto'. Línea actual: $current_line"
+          MISSING=$((MISSING+1))
+          fi
           }
 
           # Verificaciones obligatorias
           echo "Validando relaciones críticas..."
           
           # Balanceador a Servidores
-          check_rel "$LB" "$SRV1" "[[:space:]]*:[[:space:]]*"
-          check_rel "$LB" "$SRV2" "[[:space:]]*:[[:space:]]*"
+          check_rel "$LB" "$SRV1" "HTTP"
+          check_rel "$LB" "$SRV2" "HTTP"
           
           # Servidores a DB
-          check_rel "$SRV1" "$DB" "[[:space:]]*:[[:space:]]*"
-          check_rel "$SRV2" "$DB" "[[:space:]]*:[[:space:]]*"
+          check_rel "$SRV1" "$DB" "JDBC"
+          check_rel "$SRV2" "$DB" "JDBC"
           
-          # Servidores a Servicios Internos y Externos (Sin protocolo específico)
-          check_rel "$SRV1" "$EXT_RUTA" "[[:space:]]*:[[:space:]]*"
-          check_rel "$SRV2" "$EXT_RUTA" "[[:space:]]*:[[:space:]]*"
-          check_rel "$SRV1" "$EXT_NOTI" "[[:space:]]*:[[:space:]]*"
-          check_rel "$SRV2" "$EXT_NOTI" "[[:space:]]*:[[:space:]]*"
+          # Servidores a Servicios Externos (Sin protocolo específico)
+          check_rel "$SRV1" "$EXT_RUTA" "HTTPS"
+          check_rel "$SRV2" "$EXT_RUTA" "HTTPS"
+          check_rel "$SRV1" "$EXT_NOTI" "HTTPS"
+          check_rel "$SRV2" "$EXT_NOTI" "HTTPS"
           
           # Cliente e Internet
-          check_rel "$CLIENT" "$INET" "[[:space:]]*:[[:space:]]*"
-          check_rel "$INET" "$LB" "[[:space:]]*:[[:space:]]*"
+          check_rel "$CLIENT" "$INET" "HTTPS"
+          check_rel "$INET" "$LB" "HTTPS"
           
+          
+          # --- PASO 2: Validar relaciones NO autorizadas ---
+          echo "Validando relaciones no autorizadas..."
+          # Extraemos todas las líneas que contienen flechas "-->"
+          # y las procesamos para ver si están en nuestra lista blanca
+          while read -r line; do
+            # Limpiamos la línea para quedarnos solo con "Origen" --> "Destino"
+            # Eliminamos los protocolos (lo que esté después de los dos puntos)
+            clean_line=$(echo "$line" | sed -E 's/[[:space:]]*:.*//')
+          
+            authorized=false
+            for allowed in "${ALLOWED_PAIRS[@]}"; do
+              # Comparamos ignorando espacios extra
+              if echo "$clean_line" | grep -qE "$allowed"; then
+                authorized=true
+                break
+              fi
+            done
+
+            if [ "$authorized" = false ]; then
+              echo "🚫 Relacion no permitida: $line"
+              UNAUTHORIZED=$((UNAUTHORIZED+1))
+            fi
+          done < <(grep -- "-->" "$FILE")
+
           # 5. Resultado Final
-          if [ $MISSING -ne 0 ]; then
-            echo "❌ Error: Faltan $MISSING relaciones obligatorias."
+          if [ $MISSING -ne 0 ] || [ $UNAUTHORIZED -ne 0 ]; then
+            echo "❌ Incorrecto."
             exit 1
           fi
-          echo "🎉 Todas las relaciones validadas correctamente con nombres dinámicos."
+          echo "✅ Correcto."
 
       - name: Install Graphviz
         run: |
