@@ -55,9 +55,8 @@ Trips --> Business
 Stats --> Business
 
 ' Base de datos
-node "DB Server" {
-    database "Base de Datos Relacional\n(PostgreSQL / MySQL)" as DB
-}
+database "Base de Datos Relacional\n(PostgreSQL / MySQL)" as DB
+
 
 Business --> DB
 
