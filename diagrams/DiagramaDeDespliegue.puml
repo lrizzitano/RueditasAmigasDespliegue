@@ -8,6 +8,7 @@ actor "Admin"
 actor "Usuario"
 actor "Administradora"
 actor "Usuarioms"
+actor "Jorge"
 
 
 cloud "Internet"
