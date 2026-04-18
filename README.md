@@ -2,11 +2,11 @@
 
 **Rueditas Amigas** es una empresa dedicada a brindar servicios de traslado inclusivos para personas con necesidades específicas. La organización ofrece diferentes tipos de servicios adaptados, tales como traslados turísticos y actividades recreativas, garantizando recorridos de ida y vuelta, dejando a los pasajeros, en el mismo punto de encuentro que en la salida. 
 Parte de nuestro equipo realizó previamente el modelo de datos y definió un esquema relacional para persistir la información del sistema (ver modelo en el siguiente link). 
-A partir de este modelo, se implementó una primera versión del sistema, la cual actualmente presenta diversas problemáticas operativas debido al crecimiento del negocio y el aumento en la cantidad de usuarios.
+A partir de este modelo, tenemos que definir una primera versión del sistema que debe cumplir los siguientes requerimientos: 
 
 ---
 
-### ⚠️ Problemáticas Actuales
+### 📋✏️ Requerimientos
 
 * Las personas solicitantes de traslados deben poder ingresar al sistema desde cualquier dispositivo (computadora de escritorio, teléfono celular, etc).a través de internet
 * Las personas solicitantes podrán ingresar al sistema en cualquier momento del día y realizar su solicitud.
@@ -16,7 +16,7 @@ Proponé y diagramá una arquitectura que resuelva estas problemáticas usando P
 
 ---
 
-### 🖼️ Validación del Diagrama de Despliegue
+### 📍 Validación del Diagrama de Despliegue
 > [!IMPORTANT]
 > En caso de el ejercicio este correcto, el diagrama se generará automáticamente mediante GitHub Actions en la carpeta `diagrams/`.
 
