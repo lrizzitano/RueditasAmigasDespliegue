@@ -14,6 +14,35 @@ file_path = files[0]
 lines = file_path.read_text().splitlines()
 
 # ----------------------------
+# Matcheo por nombres
+# ----------------------------
+def get_node_by_keywords(prefix, keywords, text):
+    # Creamos el grupo de keywords: (Administrador|Persona Administradora|...) permitiendo espacios en el medio
+    def make_flexible(word):
+        return r"\s*".join(list(word))
+
+    flexible_keywords = [make_flexible(k) for k in keywords]
+    keyword_group = "|".join(flexible_keywords)
+
+    # El regex busca: (Comienza con admin seguido de lo que sea) O (Cualquier keyword de la lista)
+    # Expresión: (admin.*|Administrador|Persona Administradora)
+    search_pattern = rf"({prefix}.*|{keyword_group})"
+
+    pattern = rf'node\s+"([^"]+)"(?=.*{search_pattern})'
+
+    match = re.search(pattern, text, re.IGNORECASE)
+    return match.group(1) if match else fail("El valor {text} no es un nombre valido para esta variable.")
+
+
+SOLICITANTE = get_node_by_keywords("user", ["Usuario", "User", "Solicitante"], content)
+ADMINISTRADOR = get_node_by_keywords("admin", ["Administrador", "Persona Administradora", content)
+
+
+print(f"🔍 Analizando nombres")
+print(f"  Solicitante: {SOLICITANTE}")
+print(f"  Administrador:   {ADMINISTRADOR}")
+
+# ----------------------------
 # 2. Parseo
 # ----------------------------
 componentes = {}   # nombre -> tipo
