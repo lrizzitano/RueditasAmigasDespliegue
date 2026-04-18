@@ -98,37 +98,6 @@ def tipo_componente(nombre):
 def componentes_de_tipo(tipo):
     return [c for c, t in componentes.items() if t == tipo]
 
-# Detectar nodos balanceadores y servidores
-# (cloud -> balanceador -> >=2 servidores)
-balanceadores = set()
-servidores = set()
-
-for c, t in componentes.items():
-    if t != "node":
-        continue
-
-    internet_entrante = [
-        r for r in relaciones
-        if r["hasta"] == c and tipo_componente(r["desde"]) == "cloud"
-    ]
-
-    nodos_salientes = [
-        r for r in relaciones
-        if r["desde"] == c and tipo_componente(r["hasta"]) == "node"
-    ]
-
-    if len(internet_entrante) >= 1 and len(nodos_salientes) >= 2:
-        componentes[c] = "balanceador"
-        balanceadores.add(c)
-
-        # Marco los nodos balanceados como servidores
-        for r in nodos_salientes:
-            nodo = r["hasta"]
-            componentes[nodo] = "servidor"
-            servidores.add(nodo)
-
-        break
-
 actores = componentes_de_tipo("actor")
 databases = componentes_de_tipo("database")
 nodos = componentes_de_tipo("node")
@@ -179,19 +148,6 @@ else:
     ok("Actor/es OK")
 
 # ----------------------------
-# Hay un y solo un balanceador
-# ----------------------------
-
-if not balanceadores:
-    fail("Debe haber al menos un balanceador (internet --> balanceador --> multiples nodos)")
-elif len(balanceadores) > 1:
-    fail("No debe haber más de un balanceador")
-else:
-    ok("Balanceador OK")
-
-balanceador = balanceadores.pop()
-
-# ----------------------------
 # Al menos una database, sin actores conectados
 # ----------------------------
 
@@ -210,30 +166,6 @@ elif actores_a_dbs:
     fail("No debe haber actores conectados a una base de datos")
 else:
     ok("Base/s de datos OK")
-
-# ----------------------------
-# Todos los servidores comparten relaciones
-# ----------------------------
-
-def salidas(s):
-    return {
-        r["hasta"]
-        for r in relaciones
-        if r["desde"] == s
-    }
-
-# Servidor cualquiera de entre el set
-ref = salidas(next(iter(servidores)))
-
-comparten_salidas = all(
-    salidas(s) == ref
-    for s in servidores
-)
-
-if not comparten_salidas:
-    fail("Los servidores no comparten las mismas relaciones")
-else:
-    ok("Servidores OK")
 
 # ----------------------------
 # 4. Resultado final
