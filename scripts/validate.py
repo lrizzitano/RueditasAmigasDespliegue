@@ -168,9 +168,6 @@ else:
         es_solicitante = matchea_nombre(["user", "usua"], ["Usuario", "User", "Solicitante"], a)
         es_admin = matchea_nombre(["admin"], ["Administrador", "Persona Administradora"], a)
 
-        print(f"✅ Solicitante encontrado: {es_solicitante}")
-        print(f"✅ Solicitante encontrado: {es_admin}")
-
         if es_solicitante:
             print(f"✅ Solicitante encontrado: {a}")
         elif es_admin:
