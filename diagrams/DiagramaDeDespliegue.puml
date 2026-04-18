@@ -14,11 +14,14 @@ cloud "Internet"
 
 node "Servidor"
 
+database "Base de datos"
 
 "Usuario" --> "Internet"
 "Admin" --> "Internet"
 "Usuarioms" --> "Internet"
 "Administradora" --> "Internet"
+
+"Admin" --> "Base de datos"
 
 
 "Internet" -l-> "Servidor"
