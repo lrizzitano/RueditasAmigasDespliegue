@@ -1,37 +1,22 @@
-@startuml
+@startuml Diagrama de Despliegue Rueditas Amigas
 'https://plantuml.com/deployment-diagram
 
 title Diagrama de Despliegue Rueditas Amigas
 
-actor "LocuraTotal"
-actor "solicitante"
-actor "USUACCCC"
-actor "USERRRRR"
-actor "LocuraTotal"
-actor "admin1"
-actor "ADMINDEPRUEBA"
+
+actor "Admin"
+actor "Usuario"
 
 cloud "Internet"
 
 node "Servidor"
-node "Servidor2"
-node "balanceador"
 
 database "Base de datos"
 
-"solicitante" --> "Internet"
-"USUACCCC" --> "Internet"
-"USERRRRR" --> "Internet"
-"LocuraTotal" --> "Internet"
-"admin1" --> "Internet"
-"ADMINDEPRUEBA" --> "Internet"
+"Usuario" --> "Internet"
+"Admin" --> "Internet"
 
-"Internet" -l-> "balanceador"
+"Internet" -l-> "Servidor"
 
 "Servidor" -[bold]-> "Base de datos"
-"Servidor2" -[bold]-> "Base de datos"
-
-"balanceador" --> "Servidor"
-"balanceador" --> "Servidor2"
-
 @enduml
