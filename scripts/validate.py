@@ -29,7 +29,7 @@ def matchea_nombre (prefixes, keywords, text):
 
     # El regex busca: (Comienza con admin seguido de lo que sea) O (Cualquier keyword de la lista)
     # Expresión: (admin.*|Administrador|Persona Administradora)
-    search_pattern = rf"({prefix}.*|{keyword_group})"
+    search_pattern = rf"({flexible_prefixes}.*|{keyword_group})"
 
     pattern = rf'node\s+"([^"]+)"(?=.*{search_pattern})'
 
