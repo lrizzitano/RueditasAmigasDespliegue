@@ -138,9 +138,9 @@ for a in actores:
            
 
 if len(actores) < 2:
-    fail("Debe haber al menos dos actores")
+    fail("Debe haber al menos dos actores definidos (ver elemento 'actor')")
 elif len(actores) > 4:
-    fail("Hay demasiados actores")
+    fail("Hay demasiados actores, todos están realmente justificados?")
 elif cant_solicitantes < 1:
     fail("Debe haber al menos un actor que represente a les solicitantes")
 elif cant_admins < 1:
@@ -166,7 +166,7 @@ if clouds and len(nodos) == 1:
     )
 
 if actores_desconectados:
-    fail("Todos los actores deben estar conectados a través de internet (ver elementos cloud)")
+    fail("Todos los actores deben estar conectados a través de internet")
 else:
     ok("Conexion de actores OK")
 
@@ -183,7 +183,7 @@ actores_a_dbs = any(
 if not databases:
     fail("Debe haber al menos una base de datos")
 elif actores_a_dbs:
-    fail("No debe haber actores conectados a una base de datos")
+    fail("No debe haber actores conectados directamente a una base de datos")
 else:
     ok("Base/s de datos OK")
 
@@ -194,7 +194,7 @@ else:
 if not nodos:
     fail("Debe haber al menos un nodo")
 elif len(nodos) > 3:
-    fail("Hay demasiados nodos")
+    fail("Hay demasiados nodos, todos están realmente justificados?")
 else:
     ok("Nodo/s OK")
 
