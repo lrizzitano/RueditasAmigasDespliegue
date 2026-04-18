@@ -16,6 +16,8 @@ lines = file_path.read_text().splitlines()
 # ----------------------------
 # Matcheo por nombres
 # ----------------------------
+
+"""
 def get_node_by_keywords(prefixes, keywords, text):
     # Creamos el grupo de keywords: (Administrador|Persona Administradora|...) permitiendo espacios en el medio
     def make_flexible(word):
@@ -42,6 +44,7 @@ ADMINISTRADOR = get_node_by_keywords("admin", ["Administrador", "Persona Adminis
 print(f"🔍 Analizando nombres")
 print(f"  Solicitante: {SOLICITANTE}")
 print(f"  Administrador:   {ADMINISTRADOR}")
+""""
 
 # ----------------------------
 # 2. Parseo
