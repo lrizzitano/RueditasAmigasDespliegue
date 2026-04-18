@@ -17,11 +17,10 @@ lines = file_path.read_text().splitlines()
 # Matcheo por nombres
 # ----------------------------
 
-"""
-def get_node_by_keywords(prefixes, keywords, text):
+def matchea_nombre (prefixes, keywords, text):
     # Creamos el grupo de keywords: (Administrador|Persona Administradora|...) permitiendo espacios en el medio
     def make_flexible(word):
-        return r"\s*".join(list(word))
+        return r"\\s*".join(list(word))
 
     flexible_prefixes = "|".join([make_flexible(p) for p in prefixes])
 
@@ -35,16 +34,7 @@ def get_node_by_keywords(prefixes, keywords, text):
     pattern = rf'node\s+"([^"]+)"(?=.*{search_pattern})'
 
     match = re.search(pattern, text, re.IGNORECASE)
-    return match.group(1) if match else fail("El valor {text} no es un nombre valido para esta variable.")
-
-
-SOLICITANTE = get_node_by_keywords(["user", "usua"], ["Usuario", "User", "Solicitante"], content)
-ADMINISTRADOR = get_node_by_keywords("admin", ["Administrador", "Persona Administradora"], content)
-
-print(f"🔍 Analizando nombres")
-print(f"  Solicitante: {SOLICITANTE}")
-print(f"  Administrador:   {ADMINISTRADOR}")
-"""
+    return re.fullmatch(full_pattern, name_to_check, re.IGNORECASE) is not None
 
 # ----------------------------
 # 2. Parseo
@@ -177,7 +167,16 @@ elif actores_desconectados:
     fail("Todos los actores deben estar conectados a través de internet (ver elementos cloud)")
 else:
     for a in actores:
-        print(f"  - Actor: {a}")
+        es_solicitante = is_node_match(["user", "usua"], ["Usuario", "User", "Solicitante"], a)
+        es_admin = is_node_match("admin", ["Administrador", "Persona Administradora"], a)
+
+        if es_solicitante:
+            print(f"✅ Solicitante encontrado: {a}")
+        elif es_admin:
+            print(f"✅ Administrador encontrado: {a}")
+        else:
+            print(f"No matchea: {a}")
+
     ok("Actor/es OK")
 
 # ----------------------------
