@@ -19,8 +19,7 @@ database "Base de datos"
 
 "Servidor" -[bold]-> "Base de datos"
 
-//probando
-node "LoadBalancer"
+node "balanceador"
 "Internet" -l-> "LoadBalancer"
 "LoadBalancer" --> "Servidor"
 
