@@ -14,18 +14,11 @@ cloud "Internet"
 
 node "Servidor"
 
-node "trampa para saltearme la validacion porque soy re pillo"
-node "Nodo 2"
-node "Nodo 3"
-node "Nodo 4"
-
-
-database "Base de datos"
 
 "Usuario" --> "Internet"
 "Admin" --> "Internet"
 "Usuarioms" --> "Internet"
-"Administradora" --> "Servidor"
+"Administradora" --> "Internet"
 
 
 "Internet" -l-> "Servidor"
