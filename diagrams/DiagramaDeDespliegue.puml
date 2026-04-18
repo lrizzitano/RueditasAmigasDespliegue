@@ -6,8 +6,7 @@ title Diagrama de Despliegue Rueditas Amigas
 
 actor "Admin"
 actor "Usuario"
-actor "Administradora"
-actor "Usuarioms"
+
 actor "Jorge"
 
 
@@ -19,11 +18,8 @@ database "Base de datos"
 
 "Usuario" --> "Internet"
 "Admin" --> "Internet"
-"Usuarioms" --> "Internet"
-"Administradora" --> "Internet"
 
-"Admin" --> "Base de datos"
-
+"Jorge" --> "Internet"
 
 "Internet" -l-> "Servidor"
 
