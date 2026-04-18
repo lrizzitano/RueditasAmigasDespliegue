@@ -5,7 +5,7 @@ title Diagrama de Despliegue Rueditas Amigas
 
 
 actor "Admin"
-actor "Usuarioms"
+actor "Usuario"
 
 cloud "Internet"
 
@@ -13,7 +13,7 @@ node "Servidor"
 
 database "Base de datos"
 
-"Usuarioms" --> "Internet"
+"Usuario" --> "Internet"
 "Admin" --> "Internet"
 
 "Internet" -l-> "Servidor"
