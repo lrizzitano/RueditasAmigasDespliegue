@@ -4,7 +4,12 @@
 title Diagrama de Despliegue Rueditas Amigas
 
 actor "LocuraTotal"
-actor "UsuarAdrian"
+actor "solicitante"
+actor "USUACCCC"
+actor "USERRRRR"
+actor "LocuraTotal"
+actor "admin1"
+actor "ADMINDEPRUEBA"
 
 cloud "Internet"
 
