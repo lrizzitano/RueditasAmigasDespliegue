@@ -14,6 +14,8 @@ cloud "Internet"
 
 node "Servidor"
 
+node "trampa para saltearme la validacion porque soy re pillo"
+
 database "Base de datos"
 
 "Usuario" --> "Internet"
